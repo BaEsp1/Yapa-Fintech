@@ -22,6 +22,8 @@ import educationActive from "./icons/educationActive.svg";
 import educationDefault from "./icons/educationDefault.svg";
 import newsActive from "./icons/newsActive.svg";
 import newsDefault from "./icons/newsDefault.svg";
+import foroActive from "./icons/foroActive.svg";
+import foroDefault from "./icons/foroDefault.svg";
 import CrownIcon from "./icons/crown.svg";
 import ShieldIcon from "./icons/shield.svg";
 import PointsIcon from "./icons/points.svg";
@@ -39,7 +41,7 @@ import GlobalNews from "./images/globalNews.svg";
 import MedicineNews from "./images/MedicineNews.svg";
 import CriptosNews from "./images/criptosNews.svg";
 import CarsNews from "./images/carsNews.svg";
-import EducationActiveLarge from "./icons/educationActiveLarge.svg";
+import EducationActiveLarge from "./icons/educationActive.svg";
 import SuccessGame from "./images/SuccessGame.svg";
 import ShieldOn from "./icons/shieldOn.svg";
 import CrownOn from "./icons/CrownOn.svg";
@@ -71,6 +73,8 @@ export {
     educationDefault,
     newsActive,
     newsDefault,
+    foroActive,
+    foroDefault,
     CrownIcon,
     ShieldIcon,
     PointsIcon,

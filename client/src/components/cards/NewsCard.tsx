@@ -4,10 +4,10 @@ import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutline
 import BookmarkBorderOutlinedIcon from '@mui/icons-material/BookmarkBorderOutlined';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import Image from "next/image";
+
+
 export const NewsSection = () => {
-
 type ImgType = 'Criptos' | 'Medicine' | 'Cars' | "Global"
-
 const NewsMap: Record<ImgType, string> = {
   Criptos: CriptosNews, 
   Medicine: MedicineNews,

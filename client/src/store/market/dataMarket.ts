@@ -1,7 +1,5 @@
 import { create } from "zustand";
 import { fetchVariableData } from "@/utils/marketData/fetchDataBCRA";
-// import { fetchBondsData } from "@/utils/marketData/fetchDataYFBonds";
-// import { fetchCedearsData } from "@/utils/marketData/fetchDataYFCedears";
 
 interface BCRAResponse {
   idVariable: number;
@@ -37,66 +35,25 @@ export interface FinancialData {
   body: MarketData[];
 }
 
-interface MarketState {
-  reservasInternacionalesBCRA: BCRAData[];
+export interface MarketState {
   tipoCambioMinorista: BCRAData[];
-  tipoCambioMayorista: BCRAData[];
-  tasaPoliticaMonetaria: BCRAData[];
-  badlarPesosBancosPrivados: BCRAData[];
-  tasaPaseActivaBCRA: BCRAData[];
-  tasaPrestamosPersonales: BCRAData[];
-  baseMonetariaTotal: BCRAData[];
-  inflacionMensual: BCRAData[];
-  uva: BCRAData[];
-
   bonos: FinancialData[];
   cedears: FinancialData[];
-
   loadAllVariablesData: () => void;
   loadBondsData: (data: FinancialData[]) => void;
   loadCedearsData: (data: FinancialData[]) => void;
 }
 
 const marketStore = create<MarketState>((set) => ({
-  reservasInternacionalesBCRA: [],
   tipoCambioMinorista: [],
-  tipoCambioMayorista: [],
-  tasaPoliticaMonetaria: [],
-  badlarPesosBancosPrivados: [],
-  tasaPaseActivaBCRA: [],
-  tasaPrestamosPersonales: [],
-  baseMonetariaTotal: [],
-  inflacionMensual: [],
-  uva: [],
   bonos: [],
   cedears: [],
 
   loadAllVariablesData: async () => {
     try {
-      const [
-        reservasInternacionalesBCRA,
-        tipoCambioMinorista,
-        tipoCambioMayorista,
-        tasaPoliticaMonetaria,
-        badlarPesosBancosPrivados,
-        tasaPaseActivaBCRA,
-        tasaPrestamosPersonales,
-        baseMonetariaTotal,
-        inflacionMensual,
-        uva
-      ] = await Promise.all([
-        fetchVariableData("reservasInternacionalesBCRA"),
+      const [tipoCambioMinorista] = await Promise.all([
         fetchVariableData("tipoCambioMinorista"),
-        fetchVariableData("tipoCambioMayorista"),
-        fetchVariableData("tasaPoliticaMonetaria"),
-        fetchVariableData("badlarPesosBancosPrivados"),
-        fetchVariableData("tasaPaseActivaBCRA"),
-        fetchVariableData("tasaPrestamosPersonales"),
-        fetchVariableData("baseMonetariaTotal"),
-        fetchVariableData("inflacionMensual"),
-        fetchVariableData("uva")
       ]);
-
 
       const transformBCRAData = (bcraData: BCRAResponse[]): BCRAData[] => {
         return bcraData.map(item => ({
@@ -107,28 +64,9 @@ const marketStore = create<MarketState>((set) => ({
       };
 
       set({
-        reservasInternacionalesBCRA: transformBCRAData(reservasInternacionalesBCRA),
         tipoCambioMinorista: transformBCRAData(tipoCambioMinorista),
-        tipoCambioMayorista: transformBCRAData(tipoCambioMayorista),
-        tasaPoliticaMonetaria: transformBCRAData(tasaPoliticaMonetaria),
-        badlarPesosBancosPrivados: transformBCRAData(badlarPesosBancosPrivados),
-        tasaPaseActivaBCRA: transformBCRAData(tasaPaseActivaBCRA),
-        tasaPrestamosPersonales: transformBCRAData(tasaPrestamosPersonales),
-        baseMonetariaTotal: transformBCRAData(baseMonetariaTotal),
-        inflacionMensual: transformBCRAData(inflacionMensual),
-        uva: transformBCRAData(uva),
       });
 
-      // APPI Yahoo Finance
-      // const bonos = await fetchBondsData();
-      // const cedears = await fetchCedearsData();
-
-      // set({
-      //   bonos,
-      //   cedears
-      // });
-
-      //Respaldo de DATA !!!
       try {
         const response = await fetch("/data/bonds.json");
         if (response.ok) {
@@ -140,6 +78,7 @@ const marketStore = create<MarketState>((set) => ({
       } catch (error) {
         console.error("Error loading backup bonos data from local file", error);
       }
+
       try {
         const response = await fetch("/data/cedears.json");
         if (response.ok) {
@@ -151,7 +90,6 @@ const marketStore = create<MarketState>((set) => ({
       } catch (error) {
         console.error("Error loading backup cedears data from local file", error);
       }
-    
 
     } catch (error) {
       console.error("Error loading market variable data", error);

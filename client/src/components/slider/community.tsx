@@ -1,9 +1,10 @@
-import {  educationActive, educationDefault, newsActive, newsDefault} from "@/assets"
+import {  educationActive, educationDefault, newsActive, newsDefault , foroActive, foroDefault} from "@/assets"
 import Image from "next/image"
 import { useState } from "react"
 import { CarouselComunnity } from "../carousel/communityUser"
 import { Search } from "@mui/icons-material"
 import { NewsSection } from "../cards/NewsCard"
+import { ForoSection } from "../cards/ForoCard"
 
 export const SliderCommunity = () =>{
     
@@ -15,6 +16,10 @@ export const SliderCommunity = () =>{
 
     const handleChangeNews = () =>{
         setVisualData("News")
+    }
+
+    const handleChangeForo = () =>{
+        setVisualData("Foro")
     }
 
     return (
@@ -34,10 +39,17 @@ export const SliderCommunity = () =>{
                 : <Image src={newsDefault} alt=""/>
                 }
             </button>
+
+            <button onClick={handleChangeForo}>
+                { visualData === "Foro"
+                ? <Image src={foroActive} alt=""/>
+                : <Image src={foroDefault} alt=""/>
+                }
+            </button>
         </div>
 
 
-        { visualData === "Education" ?
+        { visualData === "Education" &&
         <>        
             <div className="flex flex-row gap-2 border w-[23.5em] p-1 border-white300 rounded items-center mx-auto">
                 <Search className=" ml-2 opacity-50"/>
@@ -49,9 +61,15 @@ export const SliderCommunity = () =>{
             </div>
             <CarouselComunnity />
         </>
-        : <NewsSection/>
         }
         
+        { visualData ==="News" &&
+        <NewsSection/>
+        }
+        
+        { visualData ==="Foro" &&
+        <ForoSection />
+        }
 
 
     </div>)

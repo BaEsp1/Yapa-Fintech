@@ -13,7 +13,7 @@ export default {
         foreground: "var(--foreground)",
         white25: "#FFFFFF",
         white50: "#F5F5F5",
-        white100: "#E9E9E9",
+        white100: "#DBEAFF",
         white200: "#DBDBDB",
         white300: "#C7C7C7",
         white400: "#ADADAD",

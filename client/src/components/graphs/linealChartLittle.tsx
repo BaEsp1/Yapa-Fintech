@@ -46,7 +46,7 @@ const LineChartLittle: React.FC<LineChartLittleProps> = ({ bonos, cedears, symbo
   }, [historicalData]);
 
   const drawChart = (ctx: CanvasRenderingContext2D, data: { date: string; close: number }[]) => {
-    const width = 150;
+    const width = 100;
     const height = 70;
     canvasRef.current!.width = width;
     canvasRef.current!.height = height;

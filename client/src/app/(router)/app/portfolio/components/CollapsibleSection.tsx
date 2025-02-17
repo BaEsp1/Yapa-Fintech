@@ -1,9 +1,11 @@
+'use client';
 import { useState } from 'react'
 import { ExpandMore } from '@mui/icons-material'
 import DonutChart from '@/components/graphs/donnutChart'
 
 interface Fund {
   name: string
+  value:number
   distribution: number
 }
 
@@ -60,7 +62,10 @@ export default function CollapsibleSection({
               {funds.map((fund, index) => (
                 <tr key={index} className='border-b'>
                   <td className='py-2 text-p1-regular'>{fund.name}</td>
+                  <label className="flex justify-end gap-2">
+                  <td className='py-2 text-p1-regular text-white400'>$ {fund.value.toFixed(1)}</td>
                   <td className='py-2 text-right text-p1-semibold'>  {fund.distribution.toLocaleString('es-ES', { minimumFractionDigits: 1, maximumFractionDigits: 2 }) + ' %'}</td>
+                  </label>
                 </tr>
               ))}
             </tbody>

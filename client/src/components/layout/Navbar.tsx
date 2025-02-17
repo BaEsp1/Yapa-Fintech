@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Input from '../ui/Input';
 import Link from 'next/link';
 import { Notifications } from '@mui/icons-material';
+import { LogoAzul } from '@/assets';
 
 export default function Navbar() {
 	const [isOpen, setIsOpen] = useState(false)
@@ -17,7 +18,7 @@ export default function Navbar() {
 			<nav className='mx-auto flex items-center justify-between px-4 py-2 md:py-4'>
 				{/* Logo */}
 				<div >
-					<Image src='/BlueLogo.png' alt='logo' width={72} height={36} />
+					<Image src={LogoAzul} alt='logo' width={72} height={36} />
 				</div>
 				{/* Search Bar */}
 				<div

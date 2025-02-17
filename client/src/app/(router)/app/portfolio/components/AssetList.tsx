@@ -1,13 +1,14 @@
+'use client';
 import Button from '@/components/ui/Button';
 import { ExpandMore } from '@mui/icons-material';
 import React, { useState, useEffect } from 'react';
 import LineChart from '@/components/graphs/linealChart';
 
-// Definición de las interfaces
 export interface Asset {
   name: string;
   price: number;
   change: string;
+  quantity:number;
   trend: string;
   historicalData: { 
     date: string;
@@ -49,7 +50,7 @@ export default function AssetList({ assets, bonos, cedears }: AssetListProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [visibleAssets, setVisibleAssets] = useState(4);
   
-  const [assetsWithMarketInfo, setAssetsWithMarketInfo] = useState<Asset[]>([]);  // Aquí vamos a almacenar los activos con datos históricos
+  const [assetsWithMarketInfo, setAssetsWithMarketInfo] = useState<Asset[]>([]);  
 
   const handleExpandToggle = () => {
     setIsExpanded(!isExpanded);
@@ -118,10 +119,13 @@ const getHistoricalData = (assetName: string, type: 'bonos' | 'cedears') => {
           {assetsWithMarketInfo.slice(0, visibleAssets).map((asset, index) => (
             <div
               key={index}
-              className='flex flex-col w-[200px] h-[180px]'
+              className='flex flex-col w-[200px] h-[180px] bg-primary25 rounded'
             >
               <h6 className='text-h6-bold px-2'>{asset.name}</h6>
+              <span className='flex flex-row'>
               <p className='text-p1-regular text-white700 px-2'> ${asset.price}</p>
+              <p className='text-p1-regular text-white200 px-2'> ${asset.price * asset.quantity}</p>
+                </span>
               <LineChart historicalData={asset.historicalData} />
               <p className="text-p2-semibold px-2 text-accent400">
                 {Number(asset.change) > 0 ? "+" + asset.change : "-" + asset.change}%

@@ -3,7 +3,6 @@
 import { ArrowBackIos, SettingsSuggest } from '@mui/icons-material'
 import Link from 'next/link'
 import React, { useState, useEffect } from 'react'
-import InvestmentCard from './components/InvestmentCard'
 import Button from '@/components/ui/Button'
 import CollapsibleSection from './components/CollapsibleSection'
 import AssetList from './components/AssetList'
@@ -13,19 +12,22 @@ import usePortfoilStore from '@/store/portfoil/portfoilStore'
 import marketStore from '@/store/market/dataMarket'
 import { FinancialData } from '@/store/market/dataMarket'
 import Loading from '@/components/animations/Loader/loader'
-import { getPortfolios } from '@/utils/portfoil/getPortfoil'
-import { useBalanceAndMovsStore } from '@/store/balance/balanceAndMovements';
+// import { getPortfolios } from '@/utils/portfoil/getPortfoil'
+import TotalCard from './components/totalCard'
+import useOperationsStore from '@/store/operations/operations'
 
 export default function Portfolio() {
 	const [activeTab, setActiveTab] = useState<'portfolio' | 'movements'>('portfolio')
-	const {  getConvertedAmount, earnings } = useBalanceAndMovsStore()
   const { portfolios } = usePortfoilStore();
   const [bonos, setBonos] = useState<FinancialData[]>([]);
   const [cedears, setCedears] = useState<FinancialData[]>([]);
   const [loading, setLoading] = useState(true);  
   const loadAllVariablesData = marketStore((state) => state.loadAllVariablesData);
+  const loadOperations = useOperationsStore((state) => state.loadOperations);
+  const operations = useOperationsStore((state) => state.operations);
 
   useEffect(() => {
+
     loadAllVariablesData();
     const unsubscribe = marketStore.subscribe(
       (state) => {
@@ -33,7 +35,8 @@ export default function Portfolio() {
         if (state.bonos !== bonos || state.cedears !== cedears) {
           setBonos(state.bonos);  
           setCedears(state.cedears);
-          getPortfolios()
+          loadOperations()
+          // getPortfolios()
           setLoading(false); 
         }
       }
@@ -82,18 +85,15 @@ export default function Portfolio() {
   const totalBonos = investments[0].funds.reduce((total, fund) => total + fund.value, 0);
   const totalAcciones = investments[1].funds.reduce((total, fund) => total + fund.value, 0);
   const totalInvestments = totalBonos + totalAcciones;
-  // const tasaPaseActiva = marketStore.getState().tasaPaseActivaBCRA[marketStore.getState().tasaPaseActivaBCRA.length - 1].valor || 39;
 
-  // const A = totalInvestments * Math.pow(1 + tasaPaseActiva / 100, 1);
-  // const earning = A - totalInvestments; 
-  
 
   const updatedInvestments = investments.map((investment) => {
+
     return {
       ...investment,
       funds: investment.funds.map(fund => ({
         ...fund,
-        distribution: (fund.value / totalInvestments) * 100 
+        distribution: (fund.value / totalInvestments) * 100
       }))
     };
   });
@@ -133,7 +133,7 @@ export default function Portfolio() {
           </Link>
         </div>
         <div className='mx-auto'>
-          <p className='text-p2-regular'>Ideal para desiciones estratégicas</p>
+          <p className='text-p2-regular'>Ideal para decisiones estratégicas</p>
         </div>
 
         {/* Switch Layout Content */}
@@ -155,10 +155,10 @@ export default function Portfolio() {
             </Button>
           </div>
 
+          <TotalCard  total={totalInvestments}  bonds={totalBonos} asset={totalAcciones} />
           {/* Portfolio Content */}
           {activeTab === 'portfolio' && (
             <div>
-              <InvestmentCard title='Retorno de inversión' amount={getConvertedAmount()} earning={earnings} />
               <div className='p-8 space-y-4'>
                 <h5 className='text-h5-semibold'>Composición de portafolio</h5>
                 <p className='text-p1-regular text-white700'>Descubre el origen del aumento de tu retorno de inversión.</p>
@@ -182,7 +182,7 @@ export default function Portfolio() {
           {/* Movements Content */}
           {activeTab === 'movements' && (
             <div>
-              <OperationsHistory />
+              <OperationsHistory operations={operations}/>
             </div>
           )}
         </div>
