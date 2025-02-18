@@ -8,31 +8,27 @@ module.exports = (sequelize) => {
       autoIncrement: true,
     },
     idUser: {
-      type: DataTypes.INTEGER,  
+      type: DataTypes.INTEGER, 
       allowNull: false,
     },
     type: {
       type: DataTypes.STRING,
-      allowNull: false,  
-    },
-    instrumentId: {
-      type: DataTypes.INTEGER,  
       allowNull: false,
-      references: {
-        model: 'Instrument',  
-        key: 'idInstrument',  
-      },
     },
-    symbol: {
-      type: DataTypes.STRING,
+    idInstrument: {
+      type: DataTypes.INTEGER, 
       allowNull: false,
     },
     quantity: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.INTEGER, 
       allowNull: false,
     },
     subTotal: {
-      type: DataTypes.FLOAT,  
+      type: DataTypes.FLOAT, 
+      allowNull: false,
+    },
+    pricePerUnit: {
+      type: DataTypes.FLOAT, 
       allowNull: false,
     },
     currency: {
@@ -43,17 +39,5 @@ module.exports = (sequelize) => {
       type: DataTypes.FLOAT,
       allowNull: false,
     },
-  });
-
-
-  sequelize.models.Operation.belongsTo(sequelize.models.Instrument, {
-    foreignKey: 'instrumentId',
-    as: 'instrument',
-  });
-
-
-  sequelize.models.Operation.belongsTo(sequelize.models.User, {
-    foreignKey: 'idUser',
-    as: 'user',
   });
 };

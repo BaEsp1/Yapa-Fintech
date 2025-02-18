@@ -4,7 +4,7 @@ const cors = require('cors');
 const { conn } = require('./db/database');
 const routes= require('./routes/index')
 const morgan = require('morgan')
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4000;
 
 const app = express();
 // app.use(cors({
