@@ -1,16 +1,21 @@
 const express = require('express');
-const user = require('./userRoutes');
-const login = require('./loginRoutes')
-const stats = require('./userStatsRoutes')
-const dao = require('./daoRoutes')
-const orders = require('./orderRoutes')
-
 const router = express.Router();
 
-router.use('/login', login)
-router.use('/user', user)
-router.use('/stats', stats)
-router.use('/dao', dao)
-router.use('/order',orders)
+const login = require('./loginRoutes');
+const user = require('./userRoutes');
+const goal = require('./goalRoutes');
+const portfoil = require('./portfoilRoutes');
+const profile = require('./profileRoutes');
+const balance = require('./balanceRoutes');
+const operation = require('./operationRoutes');
+
+
+router.use('/', login);
+router.use('/user', user);
+router.use('/goal', goal);
+router.use('/portfoil', portfoil);
+router.use('/profile', profile);
+router.use('/balance', balance);
+router.use('/operation', operation);
 
 module.exports = router;

@@ -21,18 +21,22 @@ sequelize.define('FinancialProfile', {
   },
   incomeMonthly: {
     type: DataTypes.FLOAT,
+    defaultValue: 0,  
     allowNull: false,
   },
   expensesMonthly: {
     type: DataTypes.FLOAT,
+    defaultValue: 0,  
     allowNull: false,
   },
   percentageSave: {
     type: DataTypes.FLOAT,
+    defaultValue: 0,  
     allowNull: false,
   },
   totalDebt: {
     type: DataTypes.FLOAT,
+    defaultValue: 0,  
     allowNull: false,
   }
 

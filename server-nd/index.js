@@ -4,6 +4,7 @@ const cors = require('cors');
 const { conn } = require('./db/database');
 const routes= require('./routes/index')
 const morgan = require('morgan')
+const { swaggerUi, swaggerSpec } = require('./config/swagger');
 const PORT = process.env.PORT || 4000;
 
 const app = express();
@@ -16,6 +17,7 @@ app.use(morgan("dev"))
 app.use(cors())
 app.use(express.json());
 app.use('/api', routes);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 (async () => {
   try {

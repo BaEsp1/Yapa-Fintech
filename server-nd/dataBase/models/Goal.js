@@ -31,6 +31,21 @@ module.exports = (sequelize) => {
       type: DataTypes.DATE,
       allowNull: false,
     },
+    status: {
+      type: DataTypes.ENUM,
+      values: ['pending', 'in-progress', 'completed'],
+      defaultValue: 'pending',
+      allowNull: false,
+    },
+    progress: {
+      type: DataTypes.FLOAT,
+      defaultValue: 0,  
+      allowNull: false,
+      validate: {
+        min: 0, 
+        max: 100, 
+      },
+    },
   });
 
   sequelize.models.Goal.belongsTo(sequelize.models.User, {
