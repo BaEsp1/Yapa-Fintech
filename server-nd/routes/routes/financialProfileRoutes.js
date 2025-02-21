@@ -1,14 +1,24 @@
 const express = require('express');
 const router = express.Router();
-const financialProfileController = require('../controllers/financialProfileController');
-const { authenticate, isAdmin } = require('../middleware/authenticate'); 
+const financialProfileController = require('../controllers/financialProfileControllers');
+const {verifyToken , verifyAdmin}= require('../middlewares/authenticate');
+
+/**
+ * @swagger
+ * tags:
+ *   name: Perfil Financiero
+ *   description: Endpoints del perfil financiero del usuario
+ */
 
 /**
  * @swagger
  * /profile:
  *   get:
  *     summary: Ver el perfil financiero del usuario autenticado
+ *     tags: [Perfil Financiero]
  *     description: Endpoint para obtener el perfil financiero de un usuario autenticado.
+ *     security:
+ *     - bearerAuth: []
  *     responses:
  *       200:
  *         description: Perfil financiero encontrado
@@ -17,13 +27,16 @@ const { authenticate, isAdmin } = require('../middleware/authenticate');
  *       500:
  *         description: Error interno del servidor
  */
-router.get('/profile', authenticate, financialProfileController.getFinancialProfile);
+router.get('/profile', verifyToken, financialProfileController.getFinancialProfile);
 
 /**
  * @swagger
  * /profiles:
  *   get:
  *     summary: Ver todos los perfiles financieros (solo para administradores)
+ *     tags: [Perfil Financiero]
+ *     security:
+ *     - bearerAuth: []
  *     description: Endpoint para obtener todos los perfiles financieros de los usuarios (solo accesible para administradores).
  *     responses:
  *       200:
@@ -31,13 +44,16 @@ router.get('/profile', authenticate, financialProfileController.getFinancialProf
  *       500:
  *         description: Error interno del servidor
  */
-router.get('/profiles', authenticate, isAdmin, financialProfileController.getAllFinancialProfiles);
+router.get('/profiles' , verifyToken,verifyAdmin, financialProfileController.getAllFinancialProfiles);
 
 /**
  * @swagger
  * /profile:
  *   put:
  *     summary: Modificar el perfil financiero del usuario autenticado
+ *     tags: [Perfil Financiero]
+ *     security:
+ *     - bearerAuth: []
  *     description: Endpoint para modificar el perfil financiero del usuario autenticado.
  *     requestBody:
  *       required: true
@@ -66,6 +82,6 @@ router.get('/profiles', authenticate, isAdmin, financialProfileController.getAll
  *       500:
  *         description: Error interno del servidor
  */
-router.put('/profile', authenticate, financialProfileController.updateFinancialProfile);
+router.put('/profile', verifyToken, financialProfileController.updateFinancialProfile);
 
 module.exports = router;

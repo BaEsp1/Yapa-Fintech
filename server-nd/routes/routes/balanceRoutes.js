@@ -1,13 +1,24 @@
 const express = require('express');
 const router = express.Router();
-const balanceController = require('../controllers/balanceController');
-const { authenticate } = require('../middleware/authenticate'); 
+const balanceController = require('../controllers/balanceControllers');
+const { verifyToken } = require('../middlewares/authenticate'); 
+
+
+/**
+ * @swagger
+ * tags:
+ *   name: Balance
+ *   description: Endpoints relacionados con los moviento de dinero del usuario
+ */
 
 /**
  * @swagger
  * /balance:
  *   get:
  *     summary: Ver el balance del usuario
+ *     tags: ["Balance"]
+ *     security:
+ *     - bearerAuth: []
  *     description: Endpoint para obtener el balance actual del usuario autenticado.
  *     responses:
  *       200:
@@ -15,13 +26,16 @@ const { authenticate } = require('../middleware/authenticate');
  *       500:
  *         description: Error interno del servidor
  */
-router.get('/balance', authenticate, balanceController.getBalance);
+router.get('/balance', verifyToken, balanceController.getBalance);
 
 /**
  * @swagger
  * /balance/withdraw:
  *   post:
  *     summary: Retirar dinero del balance
+ *     tags: ["Balance"]
+ *     security:
+ *     - bearerAuth: []
  *     description: Endpoint para realizar un retiro de dinero desde el balance del usuario.
  *     requestBody:
  *       required: true
@@ -40,7 +54,7 @@ router.get('/balance', authenticate, balanceController.getBalance);
  *       500:
  *         description: Error interno del servidor
  */
-router.post('/balance/withdraw', authenticate, balanceController.withdraw);
+router.post('/balance/withdraw', verifyToken, balanceController.withdraw);
 
 
 module.exports = router;

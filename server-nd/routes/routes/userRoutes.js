@@ -1,13 +1,23 @@
 const express = require('express');
 const router = express.Router();
-const userController = require('../controllers/userController');
-const authMiddleware = require('../middleware/authMiddleware');
+const userController = require('../controllers/userControllers');
+const {verifyToken , verifyAdmin} = require('../middlewares/authenticate');
+
+/**
+ * @swagger
+ * tags:
+ *   name: Usuarios
+ *   description: Endpoints para gestión de usuarios
+ */
 
 /**
  * @swagger
  * /users:
  *   get:
  *     summary: Obtener todos los usuarios (solo si es admin)
+ *     tags: [Usuarios]
+ *     security:
+ *     - bearerAuth: []
  *     description: Endpoint que permite obtener una lista de todos los usuarios registrados.
  *     responses:
  *       200:
@@ -17,13 +27,16 @@ const authMiddleware = require('../middleware/authMiddleware');
  *       500:
  *         description: Error interno del servidor
  */
-router.get('/', authMiddleware.verifyAdmin, userController.getAllUsers); 
+router.get('/', verifyToken, verifyAdmin, userController.getAllUsers); 
 
 /**
  * @swagger
  * /users/{id}:
  *   get:
  *     summary: Obtener un usuario por ID
+ *     tags: [Usuarios]
+ *     security:
+ *     - bearerAuth: []
  *     description: Endpoint que permite obtener los datos de un usuario específico por su ID.
  *     parameters:
  *       - in: path
@@ -40,13 +53,16 @@ router.get('/', authMiddleware.verifyAdmin, userController.getAllUsers);
  *       500:
  *         description: Error interno del servidor
  */
-router.get('/:id', authMiddleware.verifyToken, userController.getUserById); 
+router.get('/:id', verifyToken, userController.getUserById); 
 
 /**
  * @swagger
  * /users/{id}:
  *   put:
  *     summary: Actualizar un usuario
+ *     tags: [Usuarios]
+ *     security:
+ *     - bearerAuth: []
  *     description: Endpoint para actualizar la información de un usuario existente.
  *     parameters:
  *       - in: path
@@ -63,13 +79,16 @@ router.get('/:id', authMiddleware.verifyToken, userController.getUserById);
  *       500:
  *         description: Error interno del servidor
  */
-router.put('/:id', authMiddleware.verifyToken, userController.updateUser);
+router.put('/:id', verifyToken, userController.updateUser);
 
 /**
  * @swagger
  * /users/ban/{id}:
  *   put:
  *     summary: Bannear un usuario (solo si es admin)
+ *     tags: [Usuarios]
+ *     security:
+ *     - bearerAuth: []
  *     description: Endpoint que permite bannear a un usuario.
  *     parameters:
  *       - in: path
@@ -86,13 +105,16 @@ router.put('/:id', authMiddleware.verifyToken, userController.updateUser);
  *       500:
  *         description: Error interno del servidor
  */
-router.put('/ban/:id', authMiddleware.verifyAdmin, userController.banUser);
+router.put('/ban/:id', verifyToken, verifyAdmin, userController.banUser);
 
 /**
  * @swagger
  * /users/desban/{id}:
  *   put:
+ *     security:
+ *     - bearerAuth: []
  *     summary: Desbannear un usuario (solo si es admin)
+ *     tags: [Usuarios]
  *     description: Endpoint que permite desbannear a un usuario previamente baneado.
  *     parameters:
  *       - in: path
@@ -109,6 +131,6 @@ router.put('/ban/:id', authMiddleware.verifyAdmin, userController.banUser);
  *       500:
  *         description: Error interno del servidor
  */
-router.put('/desban/:id', authMiddleware.verifyAdmin, userController.desBanUser);
+router.put('/desban/:id', verifyToken, verifyAdmin, userController.desBanUser);
 
 module.exports = router;

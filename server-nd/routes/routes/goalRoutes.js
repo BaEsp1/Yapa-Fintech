@@ -1,13 +1,23 @@
 const express = require('express');
 const router = express.Router();
-const goalController = require('../controllers/goalController');
-const authMiddleware = require('../middleware/authMiddleware');
+const goalController = require('../controllers/goalControllers');
+const {verifyToken}= require('../middlewares/authenticate');
+
+/**
+ * @swagger
+ * tags:
+ *   name: Metas
+ *   description: Endpoints relacionados con las metas de ahorro del usuario
+ */
 
 /**
  * @swagger
  * /goals:
  *   get:
  *     summary: Ver todas las metas de ahorro del usuario
+ *     tags: [ Metas]
+ *     security:
+ *     - bearerAuth: []
  *     description: Endpoint que permite ver todas las metas de ahorro de un usuario.
  *     responses:
  *       200:
@@ -15,13 +25,16 @@ const authMiddleware = require('../middleware/authMiddleware');
  *       500:
  *         description: Error interno del servidor
  */
-router.get('/', authMiddleware.verifyToken, goalController.getAllGoals);
+router.get('/', verifyToken, goalController.getAllGoals);
 
 /**
  * @swagger
  * /goals/{id}:
  *   get:
  *     summary: Ver una meta de ahorro por ID
+ *     tags: [ Metas]
+ *     security:
+ *     - bearerAuth: []
  *     description: Endpoint que permite ver una meta de ahorro específica por su ID.
  *     parameters:
  *       - in: path
@@ -38,13 +51,16 @@ router.get('/', authMiddleware.verifyToken, goalController.getAllGoals);
  *       500:
  *         description: Error interno del servidor
  */
-router.get('/:id', authMiddleware.verifyToken, goalController.getGoalById);
+router.get('/:id',verifyToken, goalController.getGoalById);
 
 /**
  * @swagger
  * /goals:
  *   post:
  *     summary: Crear una nueva meta de ahorro
+ *     tags: [ Metas]
+ *     security:
+ *     - bearerAuth: []
  *     description: Endpoint para crear una meta de ahorro.
  *     requestBody:
  *       required: true
@@ -68,7 +84,7 @@ router.get('/:id', authMiddleware.verifyToken, goalController.getGoalById);
  *       500:
  *         description: Error interno del servidor
  */
-router.post('/', authMiddleware.verifyToken, goalController.createGoal);
+router.post('/', verifyToken, goalController.createGoal);
 
 
 module.exports = router;

@@ -8,7 +8,7 @@ const verifyToken = (req, res, next) => {
     return res.status(401).json({ message: 'Token no proporcionado' });
   }
 
-  jwt.verify(token, 'mi-secreto-super-seguro', async (err, decoded) => {
+  jwt.verify(token, 'ajo-y-agua', async (err, decoded) => {
     if (err) {
       return res.status(403).json({ message: 'Token inválido' });
     }

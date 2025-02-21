@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const User =require('../../dataBase/dataBase')
+const { User , Portfoil , Balance} = require('./../../dataBase/dataBase')
+
 
 const encryptPassword = (password) => {
   const salt = bcrypt.genSaltSync(10);
@@ -22,9 +23,9 @@ const generateToken = (user) => {
   return token;
 };
 
-exports.login = (req, res) => {
+exports.login = async (req, res) => {
   const { email, password } = req.body;
-  const user = User.find(user => user.email === email);
+  const user = await User.findOne({ where: { email } });
 
   if (user && checkPassword(password, user.password)) {
     const token = generateToken(user);
@@ -41,42 +42,60 @@ exports.login = (req, res) => {
 };
 
 exports.register = async (req, res) => {
-  const { firstName, lastName, birthday, country, phone, email, password } = req.body;
-  const existingUser = User.find(user => user.email === email);
+  const { name, lastName, birthday, country, phone, email, password } = req.body;
 
-  if (existingUser) {
-    return res.status(400).json({
-      message: 'El correo electrónico ya está registrado',
+  try {
+    // Verificar si el usuario ya existe
+    const existingUser = await User.findOne({ where: { email } });
+
+    if (existingUser) {
+      return res.status(400).json({
+        message: 'El correo electrónico ya está registrado',
+      });
+    }
+
+    // Encriptar la contraseña
+    const encryptedPassword = encryptPassword(password);
+
+    // Crear el usuario en la base de datos y esperar a que se guarde
+    const newUser = await User.create({
+      name : name,
+      lastName : lastName,
+      birthDate: birthday,  
+      country: country ,
+      phoneNumber: phone,
+      email : email,
+      password: encryptedPassword,
+      role: "user",
     });
+
+    // Crear un balance inicial para el usuario
+    const newBalance = await Balance.create({
+      idUser: newUser.idUser,  // Asociar el balance al usuario recién creado
+      deposited: 0,
+      saved: 0,
+      invested: 0,
+      totalBalance: 0,
+    });
+
+    // Crear el portafolio con totalPrice en 0
+    const newPortfoil = await Portfoil.create({
+      idUser: newUser.idUser,
+      totalPrice: 0,  
+    });
+
+    // Generar un token para el usuario
+    const token = generateToken(newUser);
+
+    res.status(201).json({
+      message: 'Usuario registrado exitosamente',
+      user: { id: newUser.idUser, email: newUser.email },
+      balance: newBalance,
+      portfoil: newPortfoil, 
+      token: token,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error interno al registrar el usuario' });
   }
-
-  const encryptedPassword = encryptPassword(password);
-
-  const newUser = {
-    id: User.length + 1,
-    firstName,
-    lastName,
-    birthday,
-    country,
-    phone,
-    email,
-    role: "user",
-    password: encryptedPassword,
-  };
-
-  User.push(newUser);
-
-  const token = generateToken(newUser);
-
-  const newPortfoil = await Portfoil.create({
-    idUser: newUser.idUser,
-    totalPrice: 0,  
-  });
-
-  res.status(201).json({
-    message: 'Usuario registrado exitosamente',
-    user: { id: newUser.id, email: newUser.email },
-    token: token,
-    portfoil: newPortfoil,
-  });
 };

@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-  sequelize.define('Goal', {
+  const Goal = sequelize.define('Goal', {
     idGoal: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -32,8 +32,7 @@ module.exports = (sequelize) => {
       allowNull: false,
     },
     status: {
-      type: DataTypes.ENUM,
-      values: ['pending', 'in-progress', 'completed'],
+      type: DataTypes.ENUM('pending', 'in-progress', 'completed'),
       defaultValue: 'pending',
       allowNull: false,
     },
@@ -48,8 +47,5 @@ module.exports = (sequelize) => {
     },
   });
 
-  sequelize.models.Goal.belongsTo(sequelize.models.User, {
-    foreignKey: 'idUser',
-    as: 'user',
-  });
+  return Goal; 
 };

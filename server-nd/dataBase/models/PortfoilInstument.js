@@ -1,21 +1,27 @@
-module.exports = (sequelize, DataTypes) => {
-    sequelize.define('PortfoilInstrument', {
-      idPortfoil: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'PortFoils',
-          key: 'idPortfoil',
-        },
+const { DataTypes } = require('sequelize');
+
+module.exports = (sequelize) => {
+  const PortfoilInstrument = sequelize.define('PortfoilInstrument', {
+    idPortfoil: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'Portfoil', 
+        key: 'idPortfoil',
       },
-      idInstrument: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'Instruments',
-          key: 'idInstrument',
-        },
+    },
+    idInstrument: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'Instrument',
+        key: 'idInstrument',
       },
-    }, { timestamps: false });
-  };
-  
+    },
+  }, { 
+    timestamps: false, 
+    tableName: 'PortfoilInstrument' 
+  });
+
+  return PortfoilInstrument; 
+};

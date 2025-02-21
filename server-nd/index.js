@@ -1,10 +1,10 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const { conn } = require('./db/database');
+const { conn } = require('./dataBase/dataBase');
 const routes= require('./routes/index')
 const morgan = require('morgan')
-const { swaggerUi, swaggerSpec } = require('./config/swagger');
+const { swaggerUi, swaggerSpec } = require('./swagger');
 const PORT = process.env.PORT || 4000;
 
 const app = express();

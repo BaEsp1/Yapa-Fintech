@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-  sequelize.define('Balance', {
+  const Balance = sequelize.define('Balance', {
     idBalance: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -33,8 +33,5 @@ module.exports = (sequelize) => {
     },
   });
 
-  sequelize.models.Balance.belongsTo(sequelize.models.User, {
-    foreignKey: 'idUser',
-    as: 'user',
-  });
+  return Balance; 
 };

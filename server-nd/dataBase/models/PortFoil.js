@@ -17,16 +17,5 @@ module.exports = (sequelize) => {
     },
   });
 
-  sequelize.models.Portfoil.belongsTo(sequelize.models.User, {
-    foreignKey: 'idUser',
-    as: 'user',
-  });
-
-
-  sequelize.models.Portfoil.belongsToMany(sequelize.models.Instrument, {
-    through: 'PortfoilInstruments',  
-    as: 'instruments',
-    foreignKey: 'idPortfoil',
-  });
 };
 

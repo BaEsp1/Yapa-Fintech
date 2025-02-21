@@ -6,17 +6,25 @@ const options = {
   definition: {
     openapi: '3.0.0', 
     info: {
-      title: 'API Documentation', // Título de la API
-      version: '1.0.0', // Versión de la API
-      description: 'Documentación de la API de ejemplo utilizando Swagger y Node.js',
+      title: 'InvertiFast Documentacion', 
+      version: '1.0.0', 
+      description: 'Documentación de InvertiDast - Node.js',
     },
     servers: [
       {
-        url: 'http://localhost:3000', 
-      },
-    ],
+        url: 'http://localhost:4000/api', 
+      }],
+      components: {
+        securitySchemes: {
+          bearerAuth: {
+            type: "http",
+            scheme: "bearer",
+            bearerFormat: "JWT",
+          },
+        },
+      }
   },
-  apis: ['./routes/*.js'], 
+  apis: ["./routes/**/*.js"]
 };
 
 const swaggerSpec = swaggerJSDoc(options);

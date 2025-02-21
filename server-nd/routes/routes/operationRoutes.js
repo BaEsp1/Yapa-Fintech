@@ -1,13 +1,22 @@
 const express = require('express');
 const router = express.Router();
-const operationController = require('../controllers/operationController');
-const { authenticate } = require('../middleware/authenticate'); 
+const operationController = require('../controllers/operationControllers');
+const { verifyToken} = require('../middlewares/authenticate'); 
 
+/**
+ * @swagger
+ * tags:
+ *   name: Operaciones
+ *   description: Endpoints relacionados con los movientos del usuario
+ */
 /**
  * @swagger
  * /operations:
  *   get:
  *     summary: Obtener todas las operaciones del usuario autenticado
+ *     tags: [Operaciones]
+ *     security:
+ *     - bearerAuth: []
  *     description: Endpoint para obtener todas las operaciones de compra o venta realizadas por el usuario.
  *     responses:
  *       200:
@@ -17,13 +26,16 @@ const { authenticate } = require('../middleware/authenticate');
  *       500:
  *         description: Error interno del servidor
  */
-router.get('/operations', authenticate, operationController.getAllOperations);
+router.get('/operations', verifyToken, operationController.getAllOperations);
 
 /**
  * @swagger
  * /operations:
  *   post:
  *     summary: Crear una nueva operación
+ *     tags: [Operaciones]
+ *     security:
+ *     - bearerAuth: []
  *     description: Endpoint para crear una operación de compra o venta de instrumentos.
  *     requestBody:
  *       required: true
@@ -56,13 +68,16 @@ router.get('/operations', authenticate, operationController.getAllOperations);
  *       500:
  *         description: Error interno del servidor
  */
-router.post('/operations', authenticate, operationController.createOperation);
+router.post('/operations', verifyToken, operationController.createOperation);
 
 /**
  * @swagger
  * /operations/{id}:
  *   get:
  *     summary: Obtener una operación específica por su ID
+ *     tags: [Operaciones]
+ *     security:
+ *     - bearerAuth: []
  *     description: Endpoint para obtener los detalles de una operación específica.
  *     parameters:
  *       - in: path
@@ -79,6 +94,6 @@ router.post('/operations', authenticate, operationController.createOperation);
  *       500:
  *         description: Error interno del servidor
  */
-router.get('/operations/:id', authenticate, operationController.getOperationById);
+router.get('/operations/:id',verifyToken, operationController.getOperationById);
 
 module.exports = router;

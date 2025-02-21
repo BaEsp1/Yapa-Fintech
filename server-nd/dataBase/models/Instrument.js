@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-  sequelize.define('Instrument', {
+  const Instrument = sequelize.define('Instrument', {
     idInstrument: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -25,14 +25,5 @@ module.exports = (sequelize) => {
     },
   });
 
-  sequelize.models.Instrument.belongsToMany(sequelize.models.Portfoil, {
-    through: 'PortfoilInstruments',
-    as: 'portfoils',
-    foreignKey: 'idInstrument',
-  });
-
-  sequelize.models.Instrument.hasMany(sequelize.models.Operation, {
-    foreignKey: 'idInstrument',  
-    as: 'operations',
-  });
+  return Instrument;
 };
