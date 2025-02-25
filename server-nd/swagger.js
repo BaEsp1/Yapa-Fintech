@@ -1,5 +1,6 @@
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
+const NEXT_PUBLIC_URL_BACK = process.env.NEXT_PUBLIC_URL_BACK
 
 // Configuración de Swagger
 const options = {
@@ -12,8 +13,10 @@ const options = {
     },
     servers: [
       {
-        url: 'http://localhost:4000/api', 
-      }],
+        url: `${NEXT_PUBLIC_URL_BACK}/api`  || 'http://localhost:4000/api', 
+      }
+    ],
+    
       components: {
         securitySchemes: {
           bearerAuth: {
