@@ -14,36 +14,76 @@ const {verifyToken , verifyAdmin}= require('../middlewares/authenticate');
  * @swagger
  * /profile:
  *   get:
- *     summary: Ver el perfil financiero del usuario autenticado
+ *     summary: Obtener el perfil financiero del usuario autenticado
  *     tags: [Perfil Financiero]
- *     description: Endpoint para obtener el perfil financiero de un usuario autenticado.
+ *     description: Este endpoint permite obtener el perfil financiero del usuario autenticado.
  *     security:
- *     - bearerAuth: []
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Perfil financiero encontrado
- *       401:
- *         description: No autorizado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 knowledgeLevel:
+ *                   type: string
+ *                 riskProfile:
+ *                   type: string
+ *                 incomeMonthly:
+ *                   type: number
+ *                 expensesMonthly:
+ *                   type: number
+ *                 percentageSave:
+ *                   type: number
+ *                 totalDebt:
+ *                   type: number
+ *       404:
+ *         description: Perfil financiero no encontrado
  *       500:
  *         description: Error interno del servidor
  */
-router.get('/profile', verifyToken, financialProfileController.getFinancialProfile);
+
+router.get('/', verifyToken, financialProfileController.getFinancialProfile);
 
 /**
  * @swagger
  * /profiles:
  *   get:
- *     summary: Ver todos los perfiles financieros (solo para administradores)
+ *     summary: Obtener todos los perfiles financieros (solo para administradores)
  *     tags: [Perfil Financiero]
+ *     description: Este endpoint permite obtener todos los perfiles financieros de los usuarios (solo accesible para administradores).
  *     security:
- *     - bearerAuth: []
- *     description: Endpoint para obtener todos los perfiles financieros de los usuarios (solo accesible para administradores).
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Lista de perfiles financieros
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   knowledgeLevel:
+ *                     type: string
+ *                   riskProfile:
+ *                     type: string
+ *                   incomeMonthly:
+ *                     type: number
+ *                   expensesMonthly:
+ *                     type: number
+ *                   percentageSave:
+ *                     type: number
+ *                   totalDebt:
+ *                     type: number
+ *       404:
+ *         description: No se encontraron perfiles financieros
  *       500:
  *         description: Error interno del servidor
  */
+
 router.get('/profiles' , verifyToken,verifyAdmin, financialProfileController.getAllFinancialProfiles);
 
 /**
@@ -52,9 +92,9 @@ router.get('/profiles' , verifyToken,verifyAdmin, financialProfileController.get
  *   put:
  *     summary: Modificar el perfil financiero del usuario autenticado
  *     tags: [Perfil Financiero]
+ *     description: Este endpoint permite modificar el perfil financiero del usuario autenticado.
  *     security:
- *     - bearerAuth: []
- *     description: Endpoint para modificar el perfil financiero del usuario autenticado.
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -67,21 +107,46 @@ router.get('/profiles' , verifyToken,verifyAdmin, financialProfileController.get
  *               riskProfile:
  *                 type: string
  *               incomeMonthly:
- *                 type: float
+ *                 type: number
  *               expensesMonthly:
- *                 type: float
+ *                 type: number
  *               percentageSave:
- *                 type: float
+ *                 type: number
  *               totalDebt:
- *                 type: float
+ *                 type: number
  *     responses:
  *       200:
  *         description: Perfil financiero actualizado exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 profile:
+ *                   type: object
+ *                   properties:
+ *                     knowledgeLevel:
+ *                       type: string
+ *                     riskProfile:
+ *                       type: string
+ *                     incomeMonthly:
+ *                       type: number
+ *                     expensesMonthly:
+ *                       type: number
+ *                     percentageSave:
+ *                       type: number
+ *                     totalDebt:
+ *                       type: number
  *       400:
- *         description: Error al actualizar el perfil
+ *         description: Error al actualizar el perfil (datos inválidos o incompletos)
+ *       404:
+ *         description: Perfil financiero no encontrado
  *       500:
  *         description: Error interno del servidor
  */
+
 router.put('/profile', verifyToken, financialProfileController.updateFinancialProfile);
 
 module.exports = router;

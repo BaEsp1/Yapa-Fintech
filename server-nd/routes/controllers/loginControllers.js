@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { User , Portfoil , Balance} = require('./../../dataBase/dataBase')
-
+const Secret_Key_JWT = process.env.Secret_Key_JWT
 
 const encryptPassword = (password) => {
   const salt = bcrypt.genSaltSync(10);
@@ -19,7 +19,7 @@ const generateToken = (user) => {
     firstName: user.firstName,
     lastName: user.lastName
   };
-  const token = jwt.sign(payload, 'ajo-y-agua', { expiresIn: '1h' });
+  const token = jwt.sign(payload, Secret_Key_JWT, { expiresIn: '1h' });
   return token;
 };
 

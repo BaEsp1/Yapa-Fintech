@@ -86,12 +86,11 @@ Instrument.hasMany(Operation, {
 });
 
 // Relación many-to-many
-Portfoil.belongsToMany(Instrument, { through: 'PortfoilInstruments', foreignKey: 'idPortfoil' });
-// Instrument.belongsToMany(Portfoil, { through: 'PortfoilInstruments', foreignKey: 'idInstrument' });
+Portfoil.belongsToMany(Instrument, { through: 'PortfoilInstruments', foreignKey: 'idPortfoil' ,  as: 'instruments' });
 Instrument.belongsToMany(Portfoil, {
   through: 'PortfoilInstruments',
-  as: 'portfoils',
   foreignKey: 'idInstrument',
+  as: 'portfoils',
 });
 
 

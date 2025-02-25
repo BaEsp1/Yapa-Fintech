@@ -78,22 +78,19 @@ exports.getAllPortfoils = async (req, res) => {
   
 
   // Ver el portafolio de un usuario (buscar por idUser)
-exports.getPortfoilByUserId = async (req, res) => {
+  exports.getPortfoilByUserId = async (req, res) => {
     const { id } = req.params;
-  
-    const userId = req.user.idUser; 
-  
-
-    if (parseInt(id) !== userId && req.user.role !== 'admin') {
-      return res.status(403).json({ message: 'No tienes permisos para acceder a este portafolio.' });
-    }
   
     try {
       const portfoil = await Portfoil.findOne({
-        where: { idUser: id },  
+        where: { idUser: parseInt(id) },
         include: [
-          { model: Instrument, as: 'instruments' },  
-        ]
+          {
+            model: Instrument,
+            through: { attributes: [] }, 
+            as: 'instruments',  
+          }
+        ],
       });
   
       if (!portfoil) {
@@ -102,7 +99,9 @@ exports.getPortfoilByUserId = async (req, res) => {
   
       res.status(200).json(portfoil);
     } catch (error) {
+      console.error(error); 
       res.status(500).json({ message: 'Error al obtener el portafolio', error });
     }
   };
+  
   

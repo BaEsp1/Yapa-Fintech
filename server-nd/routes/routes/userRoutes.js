@@ -18,16 +18,16 @@ const {verifyToken , verifyAdmin} = require('../middlewares/authenticate');
  *     tags: [Usuarios]
  *     security:
  *     - bearerAuth: []
- *     description: Endpoint que permite obtener una lista de todos los usuarios registrados.
+ *     description: Retorna una lista con todos los usuarios registrados en el sistema.
  *     responses:
  *       200:
- *         description: Lista de usuarios
+ *         description: Lista de usuarios obtenida correctamente.
  *       401:
- *         description: No autorizado
+ *         description: No autorizado (se requiere token de admin).
  *       500:
- *         description: Error interno del servidor
+ *         description: Error interno del servidor.
  */
-router.get('/', verifyToken, verifyAdmin, userController.getAllUsers); 
+router.get('/', verifyToken, verifyAdmin, userController.getAllUsers);
 
 /**
  * @swagger
@@ -37,47 +37,64 @@ router.get('/', verifyToken, verifyAdmin, userController.getAllUsers);
  *     tags: [Usuarios]
  *     security:
  *     - bearerAuth: []
- *     description: Endpoint que permite obtener los datos de un usuario específico por su ID.
+ *     description: Obtiene la información de un usuario específico mediante su ID.
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID del usuario a obtener
+ *         description: ID del usuario a buscar.
  *         schema:
  *           type: integer
  *     responses:
  *       200:
- *         description: Usuario encontrado
+ *         description: Usuario encontrado.
  *       404:
- *         description: Usuario no encontrado
+ *         description: Usuario no encontrado.
  *       500:
- *         description: Error interno del servidor
+ *         description: Error interno del servidor.
  */
-router.get('/:id', verifyToken, userController.getUserById); 
+router.get('/:id', verifyToken, userController.getUserById);
 
 /**
  * @swagger
  * /users/{id}:
  *   put:
- *     summary: Actualizar un usuario
+ *     summary: Actualizar la información de un usuario
  *     tags: [Usuarios]
  *     security:
  *     - bearerAuth: []
- *     description: Endpoint para actualizar la información de un usuario existente.
+ *     description: Permite actualizar los datos personales de un usuario existente.
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID del usuario a actualizar
+ *         description: ID del usuario a actualizar.
  *         schema:
  *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               lastName:
+ *                 type: string
+ *               phoneNumber:
+ *                 type: string
+ *               country:
+ *                 type: string
+ *               photoUrl:
+ *                 type: string
  *     responses:
  *       200:
- *         description: Usuario actualizado exitosamente
+ *         description: Usuario actualizado correctamente.
  *       404:
- *         description: Usuario no encontrado
+ *         description: Usuario no encontrado.
  *       500:
- *         description: Error interno del servidor
+ *         description: Error interno del servidor.
  */
 router.put('/:id', verifyToken, userController.updateUser);
 
@@ -89,21 +106,21 @@ router.put('/:id', verifyToken, userController.updateUser);
  *     tags: [Usuarios]
  *     security:
  *     - bearerAuth: []
- *     description: Endpoint que permite bannear a un usuario.
+ *     description: Cambia el estado de un usuario a "baneado".
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID del usuario a bannear
+ *         description: ID del usuario a bannear.
  *         schema:
  *           type: integer
  *     responses:
  *       200:
- *         description: Usuario baneado
+ *         description: Usuario baneado correctamente.
  *       404:
- *         description: Usuario no encontrado
+ *         description: Usuario no encontrado.
  *       500:
- *         description: Error interno del servidor
+ *         description: Error interno del servidor.
  */
 router.put('/ban/:id', verifyToken, verifyAdmin, userController.banUser);
 
@@ -111,25 +128,25 @@ router.put('/ban/:id', verifyToken, verifyAdmin, userController.banUser);
  * @swagger
  * /users/desban/{id}:
  *   put:
- *     security:
- *     - bearerAuth: []
  *     summary: Desbannear un usuario (solo si es admin)
  *     tags: [Usuarios]
- *     description: Endpoint que permite desbannear a un usuario previamente baneado.
+ *     security:
+ *     - bearerAuth: []
+ *     description: Restaura el acceso a un usuario previamente baneado.
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID del usuario a desbannear
+ *         description: ID del usuario a desbannear.
  *         schema:
  *           type: integer
  *     responses:
  *       200:
- *         description: Usuario desbaneado
+ *         description: Usuario desbaneado correctamente.
  *       404:
- *         description: Usuario no encontrado
+ *         description: Usuario no encontrado.
  *       500:
- *         description: Error interno del servidor
+ *         description: Error interno del servidor.
  */
 router.put('/desban/:id', verifyToken, verifyAdmin, userController.desBanUser);
 

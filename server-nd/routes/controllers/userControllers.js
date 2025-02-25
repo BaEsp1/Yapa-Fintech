@@ -15,7 +15,7 @@ exports.getUserById = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const user = await User.findByPk(id);
+    const user = await User.findByPk(parseInt(id))
 
     if (!user) {
       return res.status(404).json({ message: 'Usuario no encontrado' });
@@ -33,7 +33,7 @@ exports.updateUser = async (req, res) => {
   const { name, lastName, phoneNumber, country, photoUrl } = req.body;
 
   try {
-    const user = await User.findByPk(id);
+    const user = await User.findByPk(parseInt(id));
 
     if (!user) {
       return res.status(404).json({ message: 'Usuario no encontrado' });
@@ -58,7 +58,7 @@ exports.banUser = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const user = await User.findByPk(id);
+    const user = await User.findByPk(parseInt(id));
 
     if (!user) {
       return res.status(404).json({ message: 'Usuario no encontrado' });
@@ -77,7 +77,7 @@ exports.desBanUser = async (req, res) => {
     const { id } = req.params;
   
     try {
-      const user = await User.findByPk(id);
+      const user = await User.findByPk(parseInt(id));
   
       if (!user) {
         return res.status(404).json({ message: 'Usuario no encontrado' });

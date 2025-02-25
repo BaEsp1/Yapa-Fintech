@@ -1,12 +1,13 @@
-const { FinancialProfile, User } = require('../models');
+const { FinancialProfile, User } = require('../../dataBase/dataBase');
 
 // Ver el perfil financiero de un usuario (usuario autenticado)
 exports.getFinancialProfile = async (req, res) => {
   const userId = req.user.idUser; 
 
+  console.log(userId)
   try {
     const profile = await FinancialProfile.findOne({
-      where: { idUser: userId },
+      where: { idUser: parseInt(userId) },
     });
 
     if (!profile) {
@@ -38,7 +39,7 @@ exports.getAllFinancialProfiles = async (req, res) => {
 
 // Modificar el perfil financiero de un usuario
 exports.updateFinancialProfile = async (req, res) => {
-  const userId = req.user.idUser;  // ID del usuario autenticado
+  const userId = req.user.idUser;  
   const { knowledgeLevel, riskProfile, incomeMonthly, expensesMonthly, percentageSave, totalDebt } = req.body;
 
   try {

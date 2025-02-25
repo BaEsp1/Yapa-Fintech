@@ -29,25 +29,32 @@ exports.getGoalById = async (req, res) => {
 
 // Crear una nueva goal
 exports.createGoal = async (req, res) => {
-  const { title, description, targetDate, status, userId } = req.body;
-
   try {
+    const { title, description, targetDate } = req.body;
+    const userId = req.user.idUser;
+
+    if (!title ) {
+      return res.status(400).json({ message: "Título es obligatorio." });
+    }
+
     const newGoal = await Goal.create({
       title,
       description,
       targetDate,
-      status,
+      status: 'pending',
       userId
     });
 
     res.status(201).json({
-      message: 'Goal creada exitosamente',
+      message: "Meta de ahorro creada exitosamente.",
       goal: newGoal
     });
   } catch (error) {
-    res.status(500).json({ message: 'Error al crear la goal', error });
+    console.error("Error al crear la meta:", error);
+    res.status(500).json({ message: "Error interno al crear la meta de ahorro." });
   }
 };
+
 
 // Actualizar una goal
 exports.updateGoal = async (req, res) => {

@@ -3,6 +3,7 @@ const { Balance, Portfoil, Goal } = require('../../dataBase/dataBase');
 // Obtener el balance del usuario
 exports.getBalance = async (req, res) => {
   const userId = req.user.idUser;
+  console.log(userId)
 
   try {
     const balance = await Balance.findOne({ where: { idUser: userId } });

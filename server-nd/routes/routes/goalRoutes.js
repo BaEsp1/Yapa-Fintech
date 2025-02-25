@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const goalController = require('../controllers/goalControllers');
-const {verifyToken}= require('../middlewares/authenticate');
+const { verifyToken } = require('../middlewares/authenticate');
 
 /**
  * @swagger
@@ -15,13 +15,12 @@ const {verifyToken}= require('../middlewares/authenticate');
  * /goals:
  *   get:
  *     summary: Ver todas las metas de ahorro del usuario
- *     tags: [ Metas]
+ *     tags: [Metas]
  *     security:
  *     - bearerAuth: []
- *     description: Endpoint que permite ver todas las metas de ahorro de un usuario.
  *     responses:
  *       200:
- *         description: Lista de metas
+ *         description: Lista de metas obtenida exitosamente
  *       500:
  *         description: Error interno del servidor
  */
@@ -32,15 +31,13 @@ router.get('/', verifyToken, goalController.getAllGoals);
  * /goals/{id}:
  *   get:
  *     summary: Ver una meta de ahorro por ID
- *     tags: [ Metas]
+ *     tags: [Metas]
  *     security:
  *     - bearerAuth: []
- *     description: Endpoint que permite ver una meta de ahorro específica por su ID.
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID de la meta de ahorro
  *         schema:
  *           type: integer
  *     responses:
@@ -51,17 +48,16 @@ router.get('/', verifyToken, goalController.getAllGoals);
  *       500:
  *         description: Error interno del servidor
  */
-router.get('/:id',verifyToken, goalController.getGoalById);
+router.get('/:id', verifyToken, goalController.getGoalById);
 
 /**
  * @swagger
  * /goals:
  *   post:
  *     summary: Crear una nueva meta de ahorro
- *     tags: [ Metas]
+ *     tags: [Metas]
  *     security:
  *     - bearerAuth: []
- *     description: Endpoint para crear una meta de ahorro.
  *     requestBody:
  *       required: true
  *       content:
@@ -69,10 +65,10 @@ router.get('/:id',verifyToken, goalController.getGoalById);
  *           schema:
  *             type: object
  *             properties:
- *               name:
+ *               title:
  *                 type: string
  *               targetAmount:
- *                 type: float
+ *                 type: number
  *               startDate:
  *                 type: string
  *                 format: date
@@ -86,5 +82,62 @@ router.get('/:id',verifyToken, goalController.getGoalById);
  */
 router.post('/', verifyToken, goalController.createGoal);
 
+/**
+ * @swagger
+ * /goals/{id}:
+ *   put:
+ *     summary: Actualizar una meta de ahorro
+ *     tags: [Metas]
+ *     security:
+ *     - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               targetDate:
+ *                 type: string
+ *                 format: date
+ *               status:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Meta actualizada exitosamente
+ *       404:
+ *         description: Meta no encontrada
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.put('/:id', verifyToken, goalController.updateGoal);
+
+/**
+ * @swagger
+ * /goals/{id}:
+ *   delete:
+ *     summary: Eliminar una meta de ahorro
+ *     tags: [Metas]
+ *     security:
+ *     - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Meta eliminada exitosamente
+ *       404:
+ *         description: Meta no encontrada
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.delete('/:id', verifyToken, goalController.deleteGoal);
 
 module.exports = router;

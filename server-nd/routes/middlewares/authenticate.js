@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { User } = require('../../dataBase/dataBase');
+const Secret_Key_JWT = process.env.Secret_Key_JWT
 
 const verifyToken = (req, res, next) => {
   const token = req.headers['authorization']?.split(' ')[1];
@@ -8,12 +9,12 @@ const verifyToken = (req, res, next) => {
     return res.status(401).json({ message: 'Token no proporcionado' });
   }
 
-  jwt.verify(token, 'ajo-y-agua', async (err, decoded) => {
+  jwt.verify(token, Secret_Key_JWT, async (err, decoded) => {
     if (err) {
       return res.status(403).json({ message: 'Token inválido' });
     }
 
-    const user = await User.findByPk(decoded.id);
+    const user = await User.findOne({ where: { email: decoded.email } });
     if (!user) {
       return res.status(404).json({ message: 'Usuario no encontrado' });
     }

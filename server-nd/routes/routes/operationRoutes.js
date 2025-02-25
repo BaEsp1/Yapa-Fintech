@@ -1,14 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const operationController = require('../controllers/operationControllers');
-const { verifyToken} = require('../middlewares/authenticate'); 
+const { verifyToken } = require('../middlewares/authenticate'); 
 
 /**
  * @swagger
  * tags:
  *   name: Operaciones
- *   description: Endpoints relacionados con los movientos del usuario
+ *   description: Endpoints relacionados con los movimientos del usuario
  */
+
 /**
  * @swagger
  * /operations:
@@ -17,16 +18,16 @@ const { verifyToken} = require('../middlewares/authenticate');
  *     tags: [Operaciones]
  *     security:
  *     - bearerAuth: []
- *     description: Endpoint para obtener todas las operaciones de compra o venta realizadas por el usuario.
+ *     description: Obtiene todas las operaciones de compra o venta realizadas por el usuario.
  *     responses:
  *       200:
- *         description: Lista de operaciones
- *       401:
- *         description: No autorizado
+ *         description: Lista de operaciones obtenida correctamente.
+ *       404:
+ *         description: No se encontraron operaciones.
  *       500:
- *         description: Error interno del servidor
+ *         description: Error interno del servidor.
  */
-router.get('/operations', verifyToken, operationController.getAllOperations);
+router.get('/', verifyToken, operationController.getAllOperations);
 
 /**
  * @swagger
@@ -36,7 +37,7 @@ router.get('/operations', verifyToken, operationController.getAllOperations);
  *     tags: [Operaciones]
  *     security:
  *     - bearerAuth: []
- *     description: Endpoint para crear una operación de compra o venta de instrumentos.
+ *     description: Registra una operación de compra o venta de instrumentos financieros.
  *     requestBody:
  *       required: true
  *       content:
@@ -44,6 +45,8 @@ router.get('/operations', verifyToken, operationController.getAllOperations);
  *           schema:
  *             type: object
  *             properties:
+ *               idPortfoil:
+ *                 type: integer
  *               instruments:
  *                 type: array
  *                 items:
@@ -54,7 +57,7 @@ router.get('/operations', verifyToken, operationController.getAllOperations);
  *                     quantity:
  *                       type: integer
  *                     pricePerUnit:
- *                       type: float
+ *                       type: number
  *               operationType:
  *                 type: string
  *                 enum: [buy, sell]
@@ -62,11 +65,13 @@ router.get('/operations', verifyToken, operationController.getAllOperations);
  *                 type: string
  *     responses:
  *       200:
- *         description: Operación creada exitosamente
+ *         description: Operación creada exitosamente.
  *       400:
- *         description: Error en la operación
+ *         description: Error en la operación (por ejemplo, saldo insuficiente o cantidad inválida).
+ *       404:
+ *         description: Portafolio no encontrado.
  *       500:
- *         description: Error interno del servidor
+ *         description: Error interno del servidor.
  */
 router.post('/operations', verifyToken, operationController.createOperation);
 
@@ -78,22 +83,22 @@ router.post('/operations', verifyToken, operationController.createOperation);
  *     tags: [Operaciones]
  *     security:
  *     - bearerAuth: []
- *     description: Endpoint para obtener los detalles de una operación específica.
+ *     description: Obtiene los detalles de una operación específica del usuario autenticado.
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID de la operación a obtener
+ *         description: ID de la operación a obtener.
  *         schema:
  *           type: integer
  *     responses:
  *       200:
- *         description: Operación encontrada
+ *         description: Operación encontrada exitosamente.
  *       404:
- *         description: Operación no encontrada
+ *         description: Operación no encontrada o no autorizada.
  *       500:
- *         description: Error interno del servidor
+ *         description: Error interno del servidor.
  */
-router.get('/operations/:id',verifyToken, operationController.getOperationById);
+router.get('/operations/:id', verifyToken, operationController.getOperationById);
 
 module.exports = router;
