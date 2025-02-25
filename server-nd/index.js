@@ -4,7 +4,7 @@ const cors = require('cors');
 const { conn } = require('./dataBase/dataBase');
 const routes= require('./routes/index')
 const morgan = require('morgan')
-const { swaggerUi, swaggerSpec } = require('./swagger');
+const { swaggerUi, swaggerSpec, swaggerSetup } = require('./swaggerConfig');
 const PORT = process.env.PORT || 4000;
 
 const app = express();
@@ -17,7 +17,12 @@ app.use(morgan("dev"))
 app.use(cors())
 app.use(express.json());
 app.use('/api', routes);
-app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/api-docs/swagger.json', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(swaggerSpec);
+});
+
+app.use('/api/docs', swaggerUi.serve, swaggerSetup);
 
 (async () => {
   try {
