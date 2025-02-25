@@ -21,7 +21,6 @@ al perfil del usuario y a las dinámicas del mercado. Además, la app aprende de
 
 ## Instrucciones para Instalar y Ejecutar el Proyecto Localmente
 
-## Instrucciones para Instalar y Ejecutar el Proyecto Localmente
 
 1. **Clonar el repositorio:**
    ```bash
