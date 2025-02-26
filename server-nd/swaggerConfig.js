@@ -31,11 +31,4 @@ const options = {
 
 const swaggerSpec = swaggerJSDoc(options);
 
-module.exports = { 
-  swaggerUi, 
-  swaggerSpec, 
-  swaggerSetup: (req, res, next) => {
-    res.setHeader('Content-Type', 'application/json');
-    res.send(swaggerSpec);
-  }
-};
+module.exports = { swaggerUi, swaggerSpec };

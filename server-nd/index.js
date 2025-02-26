@@ -4,7 +4,7 @@ const cors = require('cors');
 const { conn } = require('./dataBase/dataBase');
 const routes= require('./routes/index')
 const morgan = require('morgan')
-const { swaggerUi, swaggerSpec, swaggerSetup } = require('./swaggerConfig');
+const { swaggerUi, swaggerSpec } = require('./swaggerConfig');
 const PORT = process.env.PORT || 4000;
 
 const app = express();
@@ -19,12 +19,13 @@ app.use(express.json());
 app.use('/api', routes);
 
 // Servir Swagger JSON manualmente
-app.get('/api-docs/swagger.json', swaggerSetup);
-
-// Servir Swagger UI
-app.use('/api/docs', swaggerUi.serve, (req, res) => {
-  res.send(swaggerUi.generateHTML(swaggerSpec));
+app.get('/api-docs/swagger.json', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(swaggerSpec);
 });
+
+// 🔥🔥 IMPORTANTE: Servir Swagger UI correctamente
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
 (async () => {
   try {
