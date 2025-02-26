@@ -9,7 +9,7 @@ const swaggerJsDoc = require("swagger-jsdoc");
 
 const PORT = process.env.PORT || 4000;
 const URL_BACK = "https://yapa-fintech-back.vercel.app" || "http://localhost:4000"; 
-const CSS_URL ="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui.min.css";
+const CSS_URL ="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.3.0/swagger-ui.min.css";
 
 const app = express();
 
