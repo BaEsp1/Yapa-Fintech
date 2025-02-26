@@ -31,15 +31,11 @@ const options = {
 
 const swaggerSpec = swaggerJSDoc(options);
 
-module.exports = {
-  swaggerUi,
-  swaggerSpec,
-  swaggerSetup: swaggerUi.setup(swaggerSpec, {
-    explorer: true,
-    swaggerOptions: {
-      url: `${NEXT_PUBLIC_URL_BACK}/api-docs/swagger.json`, 
-    },
-    customCssUrl:
-      "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css",
-  }),
+module.exports = { 
+  swaggerUi, 
+  swaggerSpec, 
+  swaggerSetup: (req, res, next) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(swaggerSpec);
+  }
 };
