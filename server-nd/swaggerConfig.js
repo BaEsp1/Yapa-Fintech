@@ -7,9 +7,9 @@ const options = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'InvertiFast Documentación',
+      title: 'Yapa Documentación',
       version: '1.0.0',
-      description: 'Documentación de InvertiFast - Node.js',
+      description: 'Documentación de Yapa - Inversiones en Node.js',
     },
     servers: [
       {
