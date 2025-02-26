@@ -1,7 +1,7 @@
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 
-const NEXT_PUBLIC_URL_BACK = process.env.NEXT_PUBLIC_URL_BACK || 'http://localhost:4000';
+const URL_BACK = "https://yapa-fintech-back.vercel.app" || 'http://localhost:4000';
 
 const options = {
   definition: {
@@ -13,7 +13,7 @@ const options = {
     },
     servers: [
       {
-        url: `${NEXT_PUBLIC_URL_BACK}/api`,
+        url: `${URL_BACK}/api`,
       }
     ],
     components: {
