@@ -17,7 +17,14 @@ app.use(morgan("dev"))
 app.use(cors())
 app.use(express.json());
 app.use('/api', routes);
-app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+// Documentación Swagger
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+  swaggerOptions: { url: '/api/docs/swagger.json' }
+}));
+
+app.get('/api/docs/swagger.json', (req, res) => {
+  res.json(swaggerSpec);
+});
 
 (async () => {
   try {
