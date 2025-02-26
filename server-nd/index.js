@@ -8,7 +8,7 @@ const swaggerUI = require("swagger-ui-express");
 const swaggerJsDoc = require("swagger-jsdoc");
 
 const PORT = process.env.PORT || 4000;
-const URL_BACK = "https://yapa-fintech-back.vercel.app" || "http://localhost:4000"; 
+const URL_BACK = "https://yapa-fintech-back.vercel.app" 
 const CSS_URL ="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.3.0/swagger-ui.min.css";
 
 const app = express();
@@ -27,7 +27,7 @@ const options = {
     },
     servers: [
       {
-        url: `${URL_BACK}/api`,
+        url: `${URL_BACK}/api`, // URL completa del backend
       },
     ],
     components: {
@@ -40,8 +40,9 @@ const options = {
       },
     },
   },
-  apis: ["./routes/*.js", "./routes/**/*.js"],
+  apis: [`${__dirname}/routes/*.js`, `${__dirname}/routes/**/*.js`], // 🔥 Usa rutas absolutas
 };
+
 
 const swaggerSpec = swaggerJsDoc(options);
 
