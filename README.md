@@ -99,6 +99,6 @@ al perfil del usuario y a las dinámicas del mercado. Además, la app aprende de
 ## Enlaces Relevantes
 
 - [![Figma](https://img.shields.io/badge/🎨-Figma-blue)](https://www.figma.com/design/bdX6kpCPnZu75wxSd9wzCZ/iUpi?t=4fG3uY20kdPZ87qr-0)
-- [![Repositorio GitHub](https://img.shields.io/badge/💻-Repositorio_GitHub-black)](https://github.com/No-Country-simulation/h4-04-fintech)
+- [![Documentacion Back-end](https://img.shields.io/badge/💻-Documentacion_Backend-black)](https://yapa-fintech-back.vercel.app/api/docs/)
 - [![Deploy](https://img.shields.io/badge/🚀-Deploy-green)](enlace_deploy)
 - [![Video](https://img.shields.io/badge/🎥-Video-tutorial-red)](https://iupi-six.vercel.app)
