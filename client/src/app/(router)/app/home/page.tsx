@@ -1,8 +1,8 @@
 "use client"
 import { useEffect } from 'react';
-import BalanceCard from "@/components/cards/BalanceCard";
+// import BalanceCard from "@/components/cards/BalanceCard";
 import Onbording from '@/components/modal/Onbording/onbording';
-// import GoalCard from "@/components/cards/GoalCard";
+import GoalCard from "@/components/cards/GoalCard";
 import RecommendationCard from '@/components/cards/RecommendationCard';
 import FinancialSampleCard from '@/components/cards/FinancialSampleCard';
 import { useFinancialProfileStore } from "@/store/user/userFinanceProfile";
@@ -14,7 +14,7 @@ import {  StorageRounded } from "@mui/icons-material";
 // import getUserProfile from '@/utils/financialProfile/getProfile';
 import dynamic from "next/dynamic";
 
-const GoalCard  = dynamic(() => import('@/components/cards/GoalCard'), { ssr: false });
+const BalanceCard  = dynamic(() => import('@/components/cards/BalanceCard'), { ssr: false });
 
 export default function Home() {
   const { modalState} = useModalStore();
