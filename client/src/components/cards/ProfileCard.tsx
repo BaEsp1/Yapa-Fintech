@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image"
 import { useUserStore } from "@/store/user/userStore"
 import { UserPhotoDefault } from "@/assets";

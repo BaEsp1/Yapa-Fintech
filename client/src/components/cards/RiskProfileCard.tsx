@@ -1,3 +1,4 @@
+"use client";
 import { useFinancialProfileStore } from "@/store/user/userFinanceProfile"
 import Button from "../ui/Button"
 import Image from "next/image"

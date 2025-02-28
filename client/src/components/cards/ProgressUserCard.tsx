@@ -1,3 +1,4 @@
+"use client";
 import { CarrouselRecommends } from "../carousel/recommendationsUser"
 import { GrowthProgressBar } from "../progressBar/growthBar"
 
