@@ -4,7 +4,7 @@
 import Image from "next/image";
 import { ArrowLargeLeft } from "@/assets";
 import { ProfileUser } from "@/components/cards/ProfileCard";
-import { RiskProfileUser } from "@/components/cards/RiskProfileCard";
+// import { RiskProfileUser } from "@/components/cards/RiskProfileCard";
 // import getUserProfile from "@/utils/financialProfile/getProfile";
 // import { ProgressUser } from "@/components/cards/ProgressUserCard";
 import dynamic from "next/dynamic";
@@ -12,6 +12,9 @@ import dynamic from "next/dynamic";
 const SettingsIcon = dynamic(() => import("@mui/icons-material/Settings"), {
   ssr: false,
 });
+
+const RiskProfileUser = dynamic(() => import("@/components/cards/RiskProfileCard").then(mod => mod.RiskProfileUser), { ssr: false });
+
 
 
 export default function Profile() {

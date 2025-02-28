@@ -30,7 +30,7 @@ export const RiskProfileUser = () =>{
                 <h1 className="text-h6-bold text-white900 ">{financialProfile?.riskProfile === "SKIP" ? "Test Omitido" : financialProfile?.riskProfile}</h1>
                 <p className="text-p2-regular">{msg}</p>
             </div>
-            <Image src={img} alt="" className="h-[9em] w-[9em] mx-auto mr-1"/>
+            {img && <Image src={img} alt="" className="h-[9em] w-[9em] mx-auto mr-1"/>}
         </div>
         <div className="flex flex-col p-3 gap-2">
             <div className="flex flex-row justify-between">
