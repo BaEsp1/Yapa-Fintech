@@ -3,8 +3,8 @@ import { useEffect } from 'react';
 import BalanceCard from "@/components/cards/BalanceCard";
 import Onbording from '@/components/modal/Onbording/onbording';
 import GoalCard from "@/components/cards/GoalCard";
-import RecommendationCard from '@/components/cards/RecommendationCard';
-// import FinancialSampleCard from '@/components/cards/FinancialSampleCard';
+// import RecommendationCard from '@/components/cards/RecommendationCard';
+import FinancialSampleCard from '@/components/cards/FinancialSampleCard';
 import { useFinancialProfileStore } from "@/store/user/userFinanceProfile";
 import getUserData from "@/utils/getUserData";
 import { useModalStore } from "@/store/onBording/modal";
@@ -14,7 +14,7 @@ import {  StorageRounded } from "@mui/icons-material";
 // import getUserProfile from '@/utils/financialProfile/getProfile';
 import dynamic from "next/dynamic";
 
-const FinancialSampleCard = dynamic(() => import('@/components/cards/FinancialSampleCard'), { ssr: false });
+const RecommendationCard  = dynamic(() => import('@/components/cards/RecommendationCard'), { ssr: false });
 
 export default function Home() {
   const { modalState} = useModalStore();
