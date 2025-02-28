@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
+// import { useEffect } from "react";
 import Image from "next/image";
 import { ArrowLargeLeft } from "@/assets";
 import { ProfileUser } from "@/components/cards/ProfileCard";
 import { RiskProfileUser } from "@/components/cards/RiskProfileCard";
-import getUserProfile from "@/utils/financialProfile/getProfile";
+// import getUserProfile from "@/utils/financialProfile/getProfile";
 import { ProgressUser } from "@/components/cards/ProgressUserCard";
 import dynamic from "next/dynamic";
 
@@ -16,11 +16,11 @@ const SettingsIcon = dynamic(() => import("@mui/icons-material/Settings"), {
 
 export default function Profile() {
 
-    useEffect(() => {
-        if (typeof window !== "undefined") {
-          getUserProfile();
-        }
-      }, []);
+    // useEffect(() => {
+    //     if (typeof window !== "undefined") {
+    //       getUserProfile();
+    //     }
+    //   }, []);
     
     
     return (
