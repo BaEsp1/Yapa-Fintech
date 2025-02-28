@@ -18,7 +18,7 @@ export default function Navbar() {
 			<nav className='mx-auto flex items-center justify-between px-4 py-2 md:py-4'>
 				{/* Logo */}
 				<div >
-					<Image src={LogoAzul} alt='logo' width={72} height={36} />
+					<Image src={LogoAzul} alt='logo' className="h-16 w-[10em]" />
 				</div>
 				{/* Search Bar */}
 				<div

@@ -8,8 +8,8 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: "IUPI - save & invest wisely",
-  description: "The best place to grow your money",
+  title: "Yapa - Inversiones",
+  description: "El mejor lugar para hacer crecer tu dinero",
   keywords: "invest, save, money, growth, wealth",
   icons: {
     icon: [

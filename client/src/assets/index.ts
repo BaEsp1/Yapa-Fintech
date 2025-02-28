@@ -1,6 +1,6 @@
 import ArrowLeftBar from "./icons/arrowL.svg";
 import ArrowLargeLeft from "./icons/arrowLargeL.svg"
-import LogoAzul from "./logo/Logo-azul.svg";
+import LogoAzul from "./logo/LogoLargo.png";
 import Cazador from "./images/Cazador.svg";
 import Sembrador from "./images/Sembrador.svg";
 import Explorador from "./images/Explorador.svg";
@@ -46,7 +46,12 @@ import SuccessGame from "./images/SuccessGame.svg";
 import ShieldOn from "./icons/shieldOn.svg";
 import CrownOn from "./icons/CrownOn.svg";
 import LoserGame from "./images/LoserGame.svg"
-
+import Laura from "./testimonials/Laura.jpg"
+import Lucia from "./testimonials/Lucia.jpg"
+import Lina from "./testimonials/Lina.jpg"
+import Martin from "./testimonials/Martin.jpg"
+import Carlos from "./testimonials/Carlos.jpg"
+import Felipe from "./testimonials/Felipe.jpg"
 
 export {
     ArrowLeftBar,
@@ -96,5 +101,11 @@ export {
     SuccessGame,
     ShieldOn,
     CrownOn, 
-    LoserGame
+    LoserGame,
+    Laura,
+    Lucia,
+    Lina,
+    Felipe,
+    Martin,
+    Carlos
 }

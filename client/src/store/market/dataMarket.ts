@@ -46,6 +46,7 @@ export interface MarketState {
 
 const marketStore = create<MarketState>((set) => ({
   tipoCambioMinorista: [],
+  // cotizacionUSD: [], //https://api.bcra.gob.ar/estadisticascambiarias/v1.0/Cotizaciones/USD 
   bonos: [],
   cedears: [],
 

@@ -98,7 +98,7 @@ export default function LoginForm() {
   return (
     <section className='mb-20 sm:w-[400px] md:w-[400px] lg:w-[400px] xl:w-[400px] mx-auto bg-white  rounded-lg'>
       <div> 
-        <h2 className='mb-4 text-center font-semibold mt-3'>Bienvenido a iUpi</h2>
+        <h2 className='mb-4 text-center font-semibold mt-3'>Bienvenido a Yapa</h2>
         <p className='text-center font-medium mb-5'>Inicia Sesion en tu cuenta</p>
             </div>
 
