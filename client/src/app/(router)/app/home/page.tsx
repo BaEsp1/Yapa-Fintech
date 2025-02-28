@@ -1,23 +1,23 @@
 "use client"
 import { useEffect } from 'react';
-import BalanceCard from "@/components/cards/BalanceCard";
+// import BalanceCard from "@/components/cards/BalanceCard";
 // import Onbording from '@/components/modal/Onbording/onbording';
-import GoalCard from "@/components/cards/GoalCard";
-import RecommendationCard from '@/components/cards/RecommendationCard';
-import FinancialSampleCard from '@/components/cards/FinancialSampleCard';
+// import GoalCard from "@/components/cards/GoalCard";
+// import RecommendationCard from '@/components/cards/RecommendationCard';
+// import FinancialSampleCard from '@/components/cards/FinancialSampleCard';
 import { useFinancialProfileStore } from "@/store/user/userFinanceProfile";
 import getUserData from "@/utils/getUserData";
-import { useModalStore } from "@/store/onBording/modal";
+// import { useModalStore } from "@/store/onBording/modal";
 import marketStore from "@/store/market/dataMarket";
 import { getPortfolios } from "@/utils/portfoil/getPortfoil";
 import {  StorageRounded } from "@mui/icons-material";
 // import getUserProfile from '@/utils/financialProfile/getProfile';
-import dynamic from "next/dynamic";
+// import dynamic from "next/dynamic";
 
-const Onbording = dynamic(() => import('@/components/modal/Onbording/onbording'), { ssr: false });
+
 
 export default function Home() {
-  const { modalState} = useModalStore();
+  // const { modalState} = useModalStore();
     const loadAllVariablesData = marketStore((state) => state.loadAllVariablesData);
     const financialProfile = useFinancialProfileStore(state => state.financialProfile);
     
@@ -68,8 +68,8 @@ export default function Home() {
 
   return (
     <main className="px-4 pt-6 pb-24 space-y-4 w-full bg-white50">
-      {modalState === "Abierto" && <Onbording />}
-      <BalanceCard/>
+      {/* {modalState === "Abierto" && <Onbording />}
+      <BalanceCard/> */}
 
       {/* Financial samples */}
       <div className='flex flex-col p-4 bg-white50 shadow-lg rounded-2xl space-y-6 lg:w-[90%] lg:mx-auto'>
@@ -83,15 +83,16 @@ export default function Home() {
         <div className='flex flex-wrap gap-4 justify-between'>
           {financialData 
           ?
-          financialData.map((data, index) => (
-            <FinancialSampleCard
-              key={index}
-              title={data.title}
-              value={data.value}
-              path={data.path}
-            />
-          )
-          ) 
+          // financialData.map((data, index) => (
+            // <FinancialSampleCard
+            //   key={index}
+            //   title={data.title}
+            //   value={data.value}
+            //   path={data.path}
+            // />
+          // )
+          ""
+          // ) 
           :<div>
             <h1>Para poder obtener una mejor experiencia , debes realizar el Test del Inversor</h1>
           </div>
@@ -100,8 +101,8 @@ export default function Home() {
         </div>
       </div>
 
-      <GoalCard />
-      <RecommendationCard />
+      {/* <GoalCard />
+      <RecommendationCard /> */}
     </main>
   );
 }
