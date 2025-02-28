@@ -4,9 +4,9 @@
 import Image from "next/image";
 import { ArrowLargeLeft } from "@/assets";
 import { ProfileUser } from "@/components/cards/ProfileCard";
-// import { RiskProfileUser } from "@/components/cards/RiskProfileCard";
-// import { ProgressUser } from "@/components/cards/ProgressUserCard";
+import { RiskProfileUser } from "@/components/cards/RiskProfileCard";
 // import getUserProfile from "@/utils/financialProfile/getProfile";
+// import { ProgressUser } from "@/components/cards/ProgressUserCard";
 import dynamic from "next/dynamic";
 
 const SettingsIcon = dynamic(() => import("@mui/icons-material/Settings"), {
@@ -43,10 +43,10 @@ export default function Profile() {
             <ProfileUser/>
         </section>
 
-        {/* <section className="p-3">
+        <section className="p-3">
             <RiskProfileUser />
         </section>
-
+{/* 
         <section className="p-3">
             <ProgressUser/>
         </section> */}
