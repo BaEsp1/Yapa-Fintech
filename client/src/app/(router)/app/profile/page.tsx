@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect , useState} from "react";
 import Image from "next/image";
 import { ArrowLargeLeft } from "@/assets";
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -9,11 +9,18 @@ import getUserProfile from "@/utils/financialProfile/getProfile";
 import { ProgressUser } from "@/components/cards/ProgressUserCard";
 
 export default function Profile() {
+    const [isClient, setIsClient] = useState(false);
 
-    useEffect(()=>{
-        getUserProfile()
-    }) 
-    
+    useEffect(() => {
+
+        setIsClient(true);
+    }, []);
+
+    useEffect(() => {
+        if (isClient) {
+            getUserProfile();
+        }
+    }, [isClient]);
     return (
         <main className="w-full h-full bg-white">
 
