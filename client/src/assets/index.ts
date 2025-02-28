@@ -7,7 +7,7 @@ import Explorador from "./images/Explorador.svg";
 import CazadorUser from "./images/CazadorUser.svg";
 import SembradorUser from "./images/SembradorUser.svg";
 import ExploradorUser from "./images/ExploradorUser.svg";
-import SkipUser from "./images/skipUser.svg"
+import SkipUser from "./images/SkipUser.svg";
 import WarningBlue from "./icons/Warning.svg";
 import UserPhotoDefault from "./images/Profile.svg";
 import CazadorEnsign from "./ensign/CazadorEnsign.svg";
