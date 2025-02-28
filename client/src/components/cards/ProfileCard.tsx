@@ -11,11 +11,9 @@ export const ProfileUser = () =>{
     let icon
     let userPhoto 
 
-    if(user.photoUrl === "string" || user.photoUrl == "") 
-        { userPhoto = UserPhotoDefault
-            } else{
-            userPhoto = user.photoUrl
-        }
+    if (!user.photoUrl || user.photoUrl === "string") { 
+        userPhoto = UserPhotoDefault;
+    }
         
     if (financialProfile?.riskProfile === "Sembrador de oportunidades"){ icon =SembradorEnsign}
     if (financialProfile?.riskProfile === "Explorador de nuevos caminos"){icon=ExploradorEnsign}
