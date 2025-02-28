@@ -1,12 +1,12 @@
 "use client";
 
-// import { useEffect } from "react";
+import { useEffect } from "react";
 import Image from "next/image";
 import { ArrowLargeLeft } from "@/assets";
 import { ProfileUser } from "@/components/cards/ProfileCard";
 // import { RiskProfileUser } from "@/components/cards/RiskProfileCard";
-// import getUserProfile from "@/utils/financialProfile/getProfile";
-// import { ProgressUser } from "@/components/cards/ProgressUserCard";
+import getUserProfile from "@/utils/financialProfile/getProfile";
+import { ProgressUser } from "@/components/cards/ProgressUserCard";
 import dynamic from "next/dynamic";
 
 const SettingsIcon = dynamic(() => import("@mui/icons-material/Settings"), {
@@ -16,14 +16,12 @@ const SettingsIcon = dynamic(() => import("@mui/icons-material/Settings"), {
 const RiskProfileUser = dynamic(() => import("@/components/cards/RiskProfileCard").then(mod => mod.RiskProfileUser), { ssr: false });
 
 
-
 export default function Profile() {
 
-    // useEffect(() => {
-    //     if (typeof window !== "undefined") {
-    //       getUserProfile();
-    //     }
-    //   }, []);
+    useEffect(() => {
+    getUserProfile();
+    
+      }, []);
     
     
     return (
@@ -49,10 +47,10 @@ export default function Profile() {
         <section className="p-3">
             <RiskProfileUser />
         </section>
-{/* 
+
         <section className="p-3">
             <ProgressUser/>
-        </section> */}
+        </section>
 
         </main>
     )
