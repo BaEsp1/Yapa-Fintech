@@ -42,8 +42,9 @@ exports.login = async (req, res) => {
 };
 
 exports.register = async (req, res) => {
-  const { name, lastName, birthday, country, phone, email, password } = req.body;
+  const { name, lastName, birthDate, country, phoneNumber, email, password } = req.body;
 
+  // console.log(req.body)
   try {
     // Verificar si el usuario ya existe
     const existingUser = await User.findOne({ where: { email } });
@@ -56,14 +57,15 @@ exports.register = async (req, res) => {
 
     // Encriptar la contraseña
     const encryptedPassword = encryptPassword(password);
+    const formattedBirthDate = new Date(birthDate);
 
     // Crear el usuario en la base de datos y esperar a que se guarde
     const newUser = await User.create({
       name : name,
       lastName : lastName,
-      birthDate: birthday,  
+      birthDate:  formattedBirthDate,  
       country: country ,
-      phoneNumber: phone,
+      phoneNumber: phoneNumber ,
       email : email,
       password: encryptedPassword,
       role: "user",

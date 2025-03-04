@@ -17,9 +17,9 @@ const PasswordRequirements: React.FC<PasswordRequirementsProps> = ({ password })
   return (
     <div>
       {requirements.map((req, index) => (
-        <div key={index} style={{ display: 'flex', alignItems: 'center' }}>
-          <span style={{ color: req.test(password) ? 'green' : 'red' }}>{req.test(password) ? <FcApproval />:<FcHighPriority />}</span>
-          <span style={{ marginLeft: 8, color: req.test(password) ? 'green' : 'red' }}>{req.label}</span>
+        <div key={index} style={{ display: 'flex', alignItems: 'center' }} className='text-p2-medium'>
+          <span style={{ color: req.test(password) ? 'green' : 'black' }}>{req.test(password) ? <FcApproval />:<FcHighPriority />}</span>
+          <span style={{ marginLeft: 8, color: req.test(password) ? 'green' : 'black' }}>{req.label}</span>
         </div>
       ))}
     </div>

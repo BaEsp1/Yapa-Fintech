@@ -28,7 +28,7 @@ export default function Home() {
               alcanzarlos.
             </p>
             <div className="mt-10 flex flex-col sm:flex-row gap-4">
-              <Link href="/account/login">
+              <Link href="/login">
                 <Button size="medium" variant="solid" className="px-8 shadow-lg">
                   Comenzar ahora
                   <ArrowBackIos className="ml-2" />
@@ -68,7 +68,7 @@ export default function Home() {
             <p className="text-xl mb-10 max-w-2xl mx-auto opacity-90">
               Únete a miles de argentinos que ya están construyendo su futuro con YAPA.
             </p>
-            <Link href="/account/register">
+            <Link href="/login">
               <Button size="large" variant="solid" className="px-8">
                 Registrarse gratis
                 <ArrowBackIos className="ml-2 h-4 w-4" />

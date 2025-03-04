@@ -5,23 +5,26 @@ export interface RegisterUser {
     email: string;
     password: string;
     phoneNumber: number;  
-    birthDate: string;
+    birthDate: Date;
     country: string;
   }
   
   export const fetchRegisterUser = async (userData: RegisterUser) => {
     const dataForRegisterUser = {
-      ...userData,
-      photoUrl: "string", 
-      roleDto: {
-        roles: ["USER"],
-      },
+      name: userData.name,
+      lastName: userData.lastName,
+      email: userData.email,
+      password: userData.password,
+      phoneNumber: String(userData.phoneNumber),
+      birthDate: userData.birthDate,
+      country: userData.country,
+      photoUrl: "string",
     };
   
-    // console.log(dataForRegisterUser);
+    console.log(dataForRegisterUser);
   
     try {
-      const response = await fetch(`${URL}/auth/register`, {
+      const response = await fetch(`${URL}/api/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
