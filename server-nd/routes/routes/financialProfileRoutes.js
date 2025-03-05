@@ -12,7 +12,7 @@ const {verifyToken , verifyAdmin}= require('../middlewares/authenticate');
 
 /**
  * @swagger
- * /profile:
+ * /:
  *   get:
  *     summary: Obtener el perfil financiero del usuario autenticado
  *     tags: [Perfil Financiero]

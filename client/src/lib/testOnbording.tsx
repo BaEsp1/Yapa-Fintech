@@ -46,3 +46,11 @@ export default function  assignProfileFinance(test: TestData): string {
     return "Error: La suma de puntos no es válida.";
   }
 }
+
+export const assignKnowLedge = (riskProfile: string) =>{
+
+  if (riskProfile === "Sembrador de oportunidades") return "Inicial"
+  if (riskProfile === "Explorador de nuevos caminos") return "Intermedio"
+  if (riskProfile === "Cazador de inversiones") return "Avanzado"
+
+}

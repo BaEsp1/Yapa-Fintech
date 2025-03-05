@@ -25,12 +25,11 @@ export const NavHome = () =>{
                       FAQ
                     </Link>
                   </nav>
-                  <div className="flex items-center gap-4">
-                    <Button variant="outline" size="small" className="hidden md:flex">
-                      Iniciar sesión
-                    </Button>
-                    <Button size="small" variant="solid">Registrarse</Button>
-                  </div>
+         
+                  <Link href="/login" className="flex items-center gap-4">
+                    <Button size="medium" variant="solid">Ingresar</Button>
+                  </Link>
+      
                 </div>
               </header>
     )

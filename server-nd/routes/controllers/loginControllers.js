@@ -19,7 +19,7 @@ const generateToken = (user) => {
     firstName: user.firstName,
     lastName: user.lastName
   };
-  const token = jwt.sign(payload, Secret_Key_JWT, { expiresIn: '1h' });
+  const token = jwt.sign(payload, Secret_Key_JWT, { expiresIn: '12h' });
   return token;
 };
 
@@ -31,8 +31,10 @@ exports.login = async (req, res) => {
     const token = generateToken(user);
     res.status(200).json({
       message: 'Inicio de sesión exitoso',
-      user: { id: user.id, email: user.email },
+      success:true,
       token: token,
+      email: user.email,
+      userId: user.idUser,
     });
   } else {
     res.status(401).json({
@@ -90,8 +92,10 @@ exports.register = async (req, res) => {
     const token = generateToken(newUser);
 
     res.status(201).json({
+      success:true,
       message: 'Usuario registrado exitosamente',
-      user: { id: newUser.idUser, email: newUser.email },
+      userId : newUser.idUser, 
+      email: newUser.email,
       balance: newBalance,
       portfoil: newPortfoil, 
       token: token,

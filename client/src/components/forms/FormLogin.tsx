@@ -1,7 +1,7 @@
 'use client';
 import React, { useState} from 'react';
 import { useFormik } from 'formik';
-import * as Yup from 'yup';
+// import * as Yup from 'yup';
 import { redirect, useRouter } from 'next/navigation'
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
@@ -18,22 +18,22 @@ export default function FormLogin() {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   
-  const validationSchema = Yup.object({
-    email: Yup.string()
-      .email('Ingrese un email válido')
-      .required('El email es requerido'),
-    password: Yup.string()
-      .min(8, 'La contraseña debe tener al menos  8 caracteres')
-      .max(15,"la contraseña debe ser igual o menor a 12 caracteres")
-      .required('La contraseña es requerida'),
-  });
+  // const validationSchema = Yup.object({
+  //   email: Yup.string()
+  //     .email('Ingrese un email válido')
+  //     .required('El email es requerido'),
+  //   password: Yup.string()
+  //     .min(8, 'La contraseña debe tener al menos  8 caracteres')
+  //     .max(15,"la contraseña debe ser igual o menor a 12 caracteres")
+  //     .required('La contraseña es requerida'),
+  // });
 
   const formik = useFormik({
     initialValues:{ 
       email: Cookies.get("userEmail") || "",
       password: "",
     },
-    validationSchema,
+    // validationSchema,
     onSubmit: async  (values, {resetForm}) => {
       setLoading(true);
 
@@ -53,6 +53,7 @@ export default function FormLogin() {
           
       try {
         const response = await fetchLoginUser(dataForLoginUser);
+        console.log(response)
         
         if (response.success === true) {
           Swal.fire({
@@ -65,7 +66,7 @@ export default function FormLogin() {
           const dataCookies = {
             email: response.email,
             token: response.token,
-            userId: response.id,
+            userId: response.userId,
           }
 
           Cookies.set('userLogged', JSON.stringify(dataCookies), {

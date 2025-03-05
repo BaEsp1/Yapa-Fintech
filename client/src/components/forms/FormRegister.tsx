@@ -82,7 +82,7 @@ export default function RegisterForm() {
             });
             const dataCookies = {
               email: response.email,
-              token: response.jwt,
+              token: response.token,
               userId: response.userId,
             }
     

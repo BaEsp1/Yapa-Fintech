@@ -1,5 +1,6 @@
+// walletStore.ts
 import { create } from 'zustand';
-import axios from 'axios';
+import { fetchWalletData } from '@/utils/balance/FetchBalance';
 
 interface TotalBalance {
   deposited: number;
@@ -17,20 +18,30 @@ const useWalletStore = create<WalletState>((set) => ({
 
   loadBalanceData: async () => {
     try {
-      const response = await axios.get('https://api.ejemplo.com/wallet');
-      const walletData = response.data;
+      const walletData = await fetchWalletData(); 
 
       set({
         totalBalance: {
           deposited: walletData.deposited,
           invested: walletData.invested,
           saved: walletData.saved,
-        }
+        },
       });
     } catch (error) {
-      console.error('Error fetching wallet data:', error);
+      console.error('Error loading balance data in store:', error);
     }
-  }
+  },
+
+  addToDeposited: async (amount: number) => {
+
+      set((state) => ({
+        totalBalance: {
+          ...state.totalBalance,
+          deposited: state.totalBalance.deposited + amount,
+        },
+      }));
+  
+}
 }));
 
 export default useWalletStore;

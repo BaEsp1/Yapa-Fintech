@@ -27,7 +27,11 @@ const options = {
     },
     servers: [
       {
-        url: `${URL_BACK}/api`, 
+        url: `${URL_BACK}/api`,
+        description: 'deploy', 
+      },
+      { url: `http://localhost:4000/api`,
+        description: 'local'
       },
     ],
     components: {

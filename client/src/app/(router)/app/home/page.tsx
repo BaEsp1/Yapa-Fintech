@@ -1,42 +1,42 @@
 "use client"
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import BalanceCard from "@/components/cards/BalanceCard";
-// import Onbording from '@/components/modal/Onbording/onbording';
 import GoalCard from "@/components/cards/GoalCard";
-// import RecommendationCard from '@/components/cards/RecommendationCard';
-// import FinancialSampleCard from '@/components/cards/FinancialSampleCard';
 import { useFinancialProfileStore } from "@/store/user/userFinanceProfile";
 import getUserData from "@/utils/getUserData";
 import { useModalStore } from "@/store/onBording/modal";
 import marketStore from "@/store/market/dataMarket";
 import { getPortfolios } from "@/utils/portfoil/getPortfoil";
 import {  StorageRounded } from "@mui/icons-material";
-// import getUserProfile from '@/utils/financialProfile/getProfile';
+import getUserProfile from '@/utils/financialProfile/getProfile';
 import dynamic from "next/dynamic";
+import Loading from '@/components/animations/Loader/loader';
 
 const Onbording = dynamic(() => import('@/components/modal/Onbording/onbording'), { ssr: false });
 const FinancialSampleCard = dynamic(() => import('@/components/cards/FinancialSampleCard'), { ssr: false });
 const RecommendationCard = dynamic(() => import('@/components/cards/RecommendationCard'), { ssr: false });
 
 export default function Home() {
-  const { modalState} = useModalStore();
+  const { modalState, openModal, closeModal} = useModalStore();
     const loadAllVariablesData = marketStore((state) => state.loadAllVariablesData);
     const financialProfile = useFinancialProfileStore(state => state.financialProfile);
+    const [loading , setLoading] = useState(true)
     
     useEffect(() => {
-    // const fetchProfile = async () => {
-    //   const { profileData } = await getUserProfile();
+    const fetchProfile = async (): Promise<void> => {
+      const { profileData } = await getUserProfile();
 
-    //   if (!profileData && modalState !== "Abierto") {
-    //     openModal();
-    //   } else {
-    //     closeModal();
-    //   }
-    // };
+      if (!profileData && modalState !== "Abierto") {
+        openModal();
+      } else {
+        closeModal();
+      }
+      setLoading(false);
+    };
     loadAllVariablesData();
     getPortfolios()
-    // fetchProfile();
     getUserData();
+    fetchProfile();
   }, []);
 
 
@@ -69,7 +69,11 @@ export default function Home() {
 
 
   return (
-    <main className="px-4 pt-6 pb-24 space-y-4 w-full bg-white50">
+  <> { 
+    loading === true
+    ?(<main><Loading/></main>)
+    :    
+  (<main className="px-4 pt-6 pb-24 space-y-4 w-full bg-white50">
       {modalState === "Abierto" && <Onbording />}
       <BalanceCard/>
 
@@ -103,6 +107,8 @@ export default function Home() {
 
       <GoalCard />
       <RecommendationCard />
-    </main>
+    </main>)
+  }
+</>
   );
 }

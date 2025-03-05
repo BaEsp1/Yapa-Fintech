@@ -1,6 +1,8 @@
 "use client";
 import { ArrowLargeLeft } from "@/assets"
 import { CardDataInvestment } from "@/components/cards/CardDataInvestment";
+import Button from "@/components/ui/Button";
+import { updateDepositedAmount } from "@/utils/balance/FetchBalance";
 import {  ArrowForwardIos } from "@mui/icons-material"
 import Image from "next/image"
 import { redirect } from "next/navigation";
@@ -23,6 +25,11 @@ function Investment (){
     }
     const handleClose = () =>{
         setData("")
+    }
+
+    const handleMoneyFree = () =>{
+        updateDepositedAmount(100000)
+        //falta crear el enpoind en backend e incorporar la logica de implementacion del div balance === 0 ...
     }
 
     return(<>
@@ -50,6 +57,14 @@ function Investment (){
                         <h2 className="text-p1-regular">Wallet digital (Próximamente)</h2>
                         <ArrowForwardIos fontSize="small"/>
                     </button>
+                </div>
+
+                <div className=" bg-primary400 flex flex-col justify-center gap-2 items-center text-white  text-center w-[50%] mx-auto p-2 mt-32 rounded-lg shadow-lg">
+                    <h2 className="text-h6-semibold">¿Sos nuevo en Yapa?</h2>
+                    <p className="text-p1-semibold">Podemos prestarte $100.000!</p>
+                    <p className="text-p2-semibold">De esta manera podrás experimentar en <strong className="text-accent400">Yapa</strong></p>
+
+                    <Button variant="basic" size="medium" onClick={handleMoneyFree}> Si Quiero!</Button>
                 </div>
             </section>}
         </main>

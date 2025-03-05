@@ -6,9 +6,16 @@ export const getPortfolios = async () => {
 
     const userLogged = JSON.parse(Cookies.get('userLogged') || '{}');
     const userId = userLogged.userId;
+    const token = userLogged.token
 
   try {
-    const response = await axios.get(`${URL}/${userId}`);
+    const response = await axios.get(`${URL}/api/portfoil/${userId}`,
+    {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     return response.data; 
     
