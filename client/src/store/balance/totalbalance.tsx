@@ -6,25 +6,27 @@ interface TotalBalance {
   deposited: number;
   invested: number;
   saved: number;
+  total: number
 }
-
 interface WalletState {
   totalBalance: TotalBalance;
   loadBalanceData: () => Promise<void>;
 }
 
 const useWalletStore = create<WalletState>((set) => ({
-  totalBalance: { deposited: 0, invested: 0, saved: 0 },
+  totalBalance: { deposited: 0, invested: 0, saved: 0 , total: 0},
 
   loadBalanceData: async () => {
     try {
-      const walletData = await fetchWalletData(); 
+      const response = await fetchWalletData(); 
+      console.log("recibo respuesta",response)
 
       set({
         totalBalance: {
-          deposited: walletData.deposited,
-          invested: walletData.invested,
-          saved: walletData.saved,
+          deposited: response.deposited,
+          invested: response.invested,
+          saved: response.saved,
+          total: response.totalBalance
         },
       });
     } catch (error) {

@@ -11,6 +11,7 @@ import {  StorageRounded } from "@mui/icons-material";
 import getUserProfile from '@/utils/financialProfile/getProfile';
 import dynamic from "next/dynamic";
 import Loading from '@/components/animations/Loader/loader';
+import useWalletStore from '@/store/balance/totalbalance';
 
 const Onbording = dynamic(() => import('@/components/modal/Onbording/onbording'), { ssr: false });
 const FinancialSampleCard = dynamic(() => import('@/components/cards/FinancialSampleCard'), { ssr: false });
@@ -19,6 +20,7 @@ const RecommendationCard = dynamic(() => import('@/components/cards/Recommendati
 export default function Home() {
   const { modalState, openModal, closeModal} = useModalStore();
     const loadAllVariablesData = marketStore((state) => state.loadAllVariablesData);
+    const loadBalanceData = useWalletStore((state)=>state.loadBalanceData)
     const financialProfile = useFinancialProfileStore(state => state.financialProfile);
     const [loading , setLoading] = useState(true)
     
@@ -34,7 +36,8 @@ export default function Home() {
       setLoading(false);
     };
     loadAllVariablesData();
-    getPortfolios()
+    loadBalanceData();
+    getPortfolios();
     getUserData();
     fetchProfile();
   }, []);

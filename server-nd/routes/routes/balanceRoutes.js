@@ -92,6 +92,56 @@ router.get('/', verifyToken, balanceController.getBalance);
  *         description: Error interno del servidor
  */
 
-router.post('/balance/withdraw', verifyToken, balanceController.withdraw);
+router.post('/withdraw', verifyToken, balanceController.withdraw);
+
+/**
+ * @swagger
+ * /balance/deposited:
+ *   put:
+ *     summary: Ingreso de dinero en deposited
+ *     tags: ["Balance"]
+ *     description: Este endpoint permite realizar un ingreso de dinero , depositado.
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               amount:
+ *                 type: number
+ *                 description: Monto a depositar
+ *     responses:
+ *       200:
+ *         description: Deposito realizado exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 balance:
+ *                   type: object
+ *                   properties:
+ *                     deposited:
+ *                       type: number
+ *                     saved:
+ *                       type: number
+ *                     invested:
+ *                       type: number
+ *                     totalBalance:
+ *                       type: number
+ *       400:
+ *         description: Saldo insuficiente para realizar el retiro
+ *       404:
+ *         description: Balance no encontrado
+ *       500:
+ *         description: Error interno del servidor
+ */
+
+router.put('/deposited', verifyToken, balanceController.updateDeposited);
 
 module.exports = router;

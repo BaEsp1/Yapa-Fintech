@@ -17,7 +17,7 @@ export default function DetailInstruments () {
     const params = useParams();
     const [id, setId] = useState<string>("");
     const moneyWallet = useWalletStore((state) => state.totalBalance.deposited);
-    const changeArsToUsd = marketStore((state) => state.tipoCambioMinorista);
+    const changeArsToUsd = marketStore((state) => state.cotizacionUSD);
     const bonos = marketStore((state) => state.bonos);
     const actions = marketStore((state) => state.cedears);
     const market = [bonos, actions];

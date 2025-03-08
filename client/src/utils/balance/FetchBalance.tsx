@@ -6,6 +6,7 @@ interface WalletData {
   deposited: number;
   invested: number;
   saved: number;
+  totalBalance: number;
 }
 
 //funcion para obtener el balance
@@ -18,6 +19,7 @@ export const fetchWalletData = async (): Promise<WalletData> => {
         headers: {
           Authorization: `Bearer ${token}`,
     }} );
+    console.log("respuesta del fetch",response.data, )
     return response.data;
 
   } catch (error) {
@@ -28,12 +30,12 @@ export const fetchWalletData = async (): Promise<WalletData> => {
 
 
 // Función para actualizar el deposited
-export const updateDepositedAmount = async (amount: number) => {
+export const updateDepositedAmount = async () => {
     const userLogged = JSON.parse(Cookies.get('userLogged') || '{}');
   const token = userLogged.token
 
   try {
-    const response = await axios.put(`${URL}/api/balance`, { deposited: amount } , {
+    const response = await axios.put(`${URL}/api/balance/deposited`, { amount: 100000 } , {
         headers: {
           Authorization: `Bearer ${token}`,
     }});

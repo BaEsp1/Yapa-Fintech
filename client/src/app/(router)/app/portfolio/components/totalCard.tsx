@@ -16,7 +16,10 @@ export default function TotalCard({ total, bonds, asset }: InvestmentCardProps) 
 			</div>
 			<div className='space-y-2'>
 				<label>Total</label>
-				<h3 className='text-h3-bold'>$ {total.toLocaleString()}</h3>
+				{ total === 0 
+				?<h3 className='text-p1-regular text-accent400 pb-3'>Comenzá a invertir mirando las opciones del mercado</h3>
+				:<h3 className='text-h3-bold'>$ {total.toLocaleString()}</h3>
+				}
 			</div>
 			<div className="flex flex-row justify-between p-2">
 			<label>Invertido en Bonos<h3 className='text-h5-semibold'>$ {bonds.toLocaleString()}</h3></label>

@@ -3,7 +3,6 @@ const { Balance, Portfoil, Goal } = require('../../dataBase/dataBase');
 // Obtener el balance del usuario
 exports.getBalance = async (req, res) => {
   const userId = req.user.idUser;
-  console.log(userId)
 
   try {
     const balance = await Balance.findOne({ where: { idUser: userId } });
@@ -171,3 +170,25 @@ exports.cancelGoal = async (req, res) => {
     }
   };
   
+  // Ingreso de dinero de la plataforma
+exports.updateDeposited= async (req, res) => {
+  const userId = req.user.idUser;
+  const { amount } = req.body; 
+
+  try {
+    const balance = await Balance.findOne({ where: { idUser: userId } });
+
+    if (!balance) {
+      return res.status(404).json({ message: 'Balance no encontrado' });
+    }
+    balance.deposited = parseFloat(balance.deposited) || 0;
+    balance.deposited += parseFloat(amount) ;
+    balance.totalBalance = balance.deposited + balance.saved + balance.invested;
+
+    await balance.save();  
+
+    res.status(200).json({ message: 'Dinero retirado exitosamente', balance });
+  } catch (error) {
+    res.status(400).json({ message: 'Error al ingrear dinero', error });
+  }
+};

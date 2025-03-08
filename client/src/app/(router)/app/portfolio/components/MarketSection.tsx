@@ -78,8 +78,8 @@ export default function MarketSection({ bonos, cedears }: MarketSectionProps) {
 
 
   return (
-    <div className="flex flex-col gap-6 w-full">
-      <header className="flex flex-col gap-4">
+    <div className="flex flex-col gap-6 w-full p-2 ">
+      <header className="flex flex-col gap-4 justify-center p-2">
         <h5 className="text-h5-semibold py-2">Mercado</h5>
         <p className="text-p1-regular text-white700">
           Últimas tendencias y análisis del mercado para que tomes decisiones informadas.

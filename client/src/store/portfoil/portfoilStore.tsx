@@ -21,46 +21,7 @@ interface PortfoilStore {
 }
 
 const usePortfoilStore = create<PortfoilStore>((set) => ({
-  portfolios: {"Bonos": [
-      {
-        id: 1,
-        quantity: 100,
-        purchasePrice: 101.5,
-        purchaseDate: "2025-02-01",
-        category: "Bonos",
-        object: ["AL30.BA", "Bono del gobierno", 101.5, 100],
-        userId: 1
-      },
-      {
-        id: 2,
-        quantity: 50,
-        purchasePrice: 110.0,
-        purchaseDate: "2025-02-01",
-        category: "Bonos",
-        object: ["AL35.BA", "Bono corporativo", 110.0, 50],
-        userId: 1
-      }
-    ],
-    "Acciones": [
-      {
-        id: 3,
-        quantity: 200,
-        purchasePrice: 25.75,
-        purchaseDate: "2025-02-01",
-        category: "Acciones",
-        object: ["DIS.BA", "Acción tecnológica", 25.75, 200],
-        userId: 1
-      },
-      {
-        id: 4,
-        quantity: 150,
-        purchasePrice: 50.25,
-        purchaseDate: "2025-02-01",
-        category: "Acciones",
-        object: ["AAPL.BA", "Acción energética", 50.25, 150],
-        userId: 1
-      }
-    ]},
+  portfolios: {},
   loading: false,
   error: null,
 

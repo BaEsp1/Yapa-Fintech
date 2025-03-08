@@ -21,7 +21,7 @@ export interface RegisterUser {
       photoUrl: "string",
     };
   
-    console.log(dataForRegisterUser);
+    // console.log(dataForRegisterUser);
   
     try {
       const response = await fetch(`${URL}/api/register`, {

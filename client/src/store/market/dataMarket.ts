@@ -36,7 +36,8 @@ export interface FinancialData {
 }
 
 export interface MarketState {
-  tipoCambioMinorista: BCRAData[];
+  tasaDeInteres: BCRAData[];
+  cotizacionUSD:BCRAData[];
   bonos: FinancialData[];
   cedears: FinancialData[];
   loadAllVariablesData: () => void;
@@ -45,15 +46,18 @@ export interface MarketState {
 }
 
 const marketStore = create<MarketState>((set) => ({
-  tipoCambioMinorista: [],
-  // cotizacionUSD: [], //https://api.bcra.gob.ar/estadisticascambiarias/v1.0/Cotizaciones/USD 
+  tasaDeInteres: [],
+  cotizacionUSD:[],
   bonos: [],
   cedears: [],
 
   loadAllVariablesData: async () => {
     try {
-      const [tipoCambioMinorista] = await Promise.all([
-        fetchVariableData("tipoCambioMinorista"),
+      const [tasaDeInteres] = await Promise.all([
+        fetchVariableData("tasaDeInteres"),
+      ]);
+      const [cotizacionUSD] = await Promise.all([
+        fetchVariableData("cotizacionUSD"),
       ]);
 
       const transformBCRAData = (bcraData: BCRAResponse[]): BCRAData[] => {
@@ -65,7 +69,8 @@ const marketStore = create<MarketState>((set) => ({
       };
 
       set({
-        tipoCambioMinorista: transformBCRAData(tipoCambioMinorista),
+        tasaDeInteres: transformBCRAData(tasaDeInteres),
+        cotizacionUSD: transformBCRAData(cotizacionUSD),
       });
 
       try {

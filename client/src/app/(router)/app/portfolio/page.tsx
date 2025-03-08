@@ -12,37 +12,35 @@ import usePortfoilStore from '@/store/portfoil/portfoilStore'
 import marketStore from '@/store/market/dataMarket'
 import { FinancialData } from '@/store/market/dataMarket'
 import Loading from '@/components/animations/Loader/loader'
-// import { getPortfolios } from '@/utils/portfoil/getPortfoil'
+import { getPortfolios } from '@/utils/portfoil/getPortfoil'
 import TotalCard from './components/totalCard'
 import useOperationsStore from '@/store/operations/operations'
+import { Asset } from './components/AssetList'
 
 export default function Portfolio() {
 	const [activeTab, setActiveTab] = useState<'portfolio' | 'movements'>('portfolio')
   const { portfolios } = usePortfoilStore();
+  const myPortfolio = usePortfoilStore ((state)=> state.portfolios)
+  //Tengo un quilombito aca , tengo que filtrar mi portafolio en acciones y bonos para despues cargarlo aca
   const [bonos, setBonos] = useState<FinancialData[]>([]);
   const [cedears, setCedears] = useState<FinancialData[]>([]);
   const [loading, setLoading] = useState(true);  
   const loadAllVariablesData = marketStore((state) => state.loadAllVariablesData);
   const loadOperations = useOperationsStore((state) => state.loadOperations);
   const operations = useOperationsStore((state) => state.operations);
+  let mappedAssets : Asset[] = []
 
   useEffect(() => {
 
+    if(loading){
+    getPortfolios()
     loadAllVariablesData();
-    const unsubscribe = marketStore.subscribe(
-      (state) => {
-
-        if (state.bonos !== bonos || state.cedears !== cedears) {
-          setBonos(state.bonos);  
-          setCedears(state.cedears);
-          loadOperations()
-          // getPortfolios()
+    setBonos(myPortfolio.bonos)
+    setCedears(myPortfolio.acciones)
+    loadOperations()
           setLoading(false); 
         }
-      }
-    );
-
-    return () => unsubscribe();  
+ 
   }, [bonos, cedears, loadAllVariablesData]);
 
 
@@ -98,24 +96,28 @@ export default function Portfolio() {
     };
   });
 
-  const mappedAssets = [
-    ...portfolios?.Bonos.map((item) => ({
-      name: item.object[0],
-      price: item.purchasePrice,
-      change: '0', 
-      trend: 'neutral', 
-      quantity: item.quantity, 
-      historicalData: []
-    })),
-    ...portfolios?.Acciones.map((item) => ({
-      name: item.object[0], 
-      price: item.purchasePrice, 
-      change: '0', 
-      trend: 'neutral', 
-      quantity: item.quantity, 
-      historicalData: []
-    })),
-  ];
+  if (portfolios) {
+    mappedAssets = [
+      ...(portfolios?.Bonos?.length ? portfolios.Bonos.map((item) => ({
+        name: item.object[0],
+        price: item.purchasePrice,
+        change: '0',
+        trend: 'neutral',
+        quantity: item.quantity,
+        historicalData: []
+      })) : []),
+      ...(portfolios?.Acciones?.length ? portfolios.Acciones.map((item) => ({
+        name: item.object[0],
+        price: item.purchasePrice,
+        change: '0',
+        trend: 'neutral',
+        quantity: item.quantity,
+        historicalData: []
+      })) : []),
+    ];
+  } else {
+    mappedAssets = [];
+  }
 
   return (
     <main className="px-4 pt-6 pb-24 w-full h-min-screen text-white900">
@@ -164,17 +166,23 @@ export default function Portfolio() {
                 <p className='text-p1-regular text-white700'>Descubre el origen del aumento de tu retorno de inversión.</p>
               </div>
 
+              { (portfolios?.Bonos?.length > 0 || portfolios?.Acciones?.length > 0) ?
+              <>
               <div className='p-4 space-y-8'>
                 {updatedInvestments.map((investment, index) => (
-                  <CollapsibleSection
-                    key={index}
-                    category={investment.title}
-                    funds={investment.funds}
-                  />
-                ))}
+                    <CollapsibleSection
+                      key={index}
+                      category={investment.title}
+                      funds={investment.funds}
+                    />
+                  ))}
               </div>
 
               <AssetList assets={mappedAssets} bonos={bonos} cedears={cedears}/>
+              </>
+                : (<h3 className='text-p1-regular text-accent400 px-6  '>Animáte a invertir!</h3>)
+              }
+
               <MarketSection bonos={bonos} cedears={cedears} />
             </div>
           )}
