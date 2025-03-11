@@ -9,20 +9,27 @@ import { InstrumentProps } from "./GeneralInformation";
 export const InvestmentCard = ({ id, market , moneyWallet ,usd}: InstrumentProps) =>{
     const instrument = market.flat().find(item => item.meta.symbol === id);
     const [modal , setModal] = useState(false)
+    const bonos = market[0];
     const [inversionData , setInversionData] = useState({
         price:0,
         currency:"",
         symbol:"",
+        name:"",
+        type:"",
         usd: 0,
         moneyWallet: 0
-    })
-
+    })  
+    
+    const type = bonos.some(item => item.meta.symbol === instrument?.meta.symbol) ? "Bono" : "Cedear";
     const handleOpenModal =()=>{
+    
         setInversionData({
             price: instrument?.body[instrument.body.length - 1].close || 1 ,
             currency:instrument?.meta.currency || "ARS" ,
+            name:instrument?.meta.longName || "" ,
             symbol:instrument?.meta.symbol || "",
             usd: usd || 0,
+            type: type,
             moneyWallet: moneyWallet || 0
         })
         setModal(true)

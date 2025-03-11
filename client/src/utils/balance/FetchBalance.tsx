@@ -19,7 +19,7 @@ export const fetchWalletData = async (): Promise<WalletData> => {
         headers: {
           Authorization: `Bearer ${token}`,
     }} );
-    console.log("respuesta del fetch",response.data, )
+
     return response.data;
 
   } catch (error) {

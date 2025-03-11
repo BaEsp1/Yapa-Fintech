@@ -72,7 +72,7 @@ export default function FormLogin() {
           Cookies.set('userLogged', JSON.stringify(dataCookies), {
             secure: true,
             sameSite: 'strict',
-            expires: 7, // Duración de la cookie en días
+            expires:  12 / 24,
           });
           setLoading(false);
           resetForm();

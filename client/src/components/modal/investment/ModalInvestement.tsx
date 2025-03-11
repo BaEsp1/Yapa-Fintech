@@ -1,12 +1,15 @@
+import useOperationsStore, { Instrument } from '@/store/operations/operations';
 import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 
 interface ModalInvestmentProps {
   inversionData: {
+    name: string;
     price: number;
     currency: string;
     symbol: string;
-    usd:number,
+    usd:number;
+    type: string;
     moneyWallet:number
   };
   onClose: () => void;
@@ -14,15 +17,7 @@ interface ModalInvestmentProps {
 
 export const ModalInvestement = ({ inversionData, onClose }: ModalInvestmentProps) => {
   const [quantity, setQuantity] = useState(1);
-  const [buy, setBuy] = useState({
-    symbol: "",
-    price: 0,
-    quantity: 0,
-    subtotal: 0,
-    total: 0,
-    currency: "",
-  });
-
+  const { createOperation } = useOperationsStore(); 
   const changeCurrency = inversionData.usd
   const moneyWallet = inversionData.moneyWallet
 
@@ -39,7 +34,7 @@ export const ModalInvestement = ({ inversionData, onClose }: ModalInvestmentProp
     onClose();
   }
 
-  const handleConfirm = () => {
+  const handleConfirm = async() => {
     const subtotal = inversionData.price * quantity;
     let total = subtotal;
 
@@ -47,21 +42,24 @@ export const ModalInvestement = ({ inversionData, onClose }: ModalInvestmentProp
       total = subtotal * changeCurrency;
     }
 
-  
-    setBuy({
+    const instrument : Instrument = {
+      name:inversionData.name,
       symbol: inversionData.symbol,
+      type:inversionData.type,
       price: inversionData.price,
-      quantity: quantity,
-      subtotal: subtotal,
-      total: total,
       currency: inversionData.currency === "USD" ? "ARS" : inversionData.currency, 
-    });
+      quantity: quantity,
+    }
 
-    console.log(buy); 
+    const operationData ={
+      instrument,
+      operationType: 'buy',
+      currency: inversionData.currency === "USD" ? "ARS" : inversionData.currency, 
+      subTotal: subtotal,
+      totalPrice: total,
+    }
 
-   
-    onClose();
-
+    await createOperation(operationData)
 
     Swal.fire({
       title: '¡Inversión realizada!',
@@ -71,6 +69,8 @@ export const ModalInvestement = ({ inversionData, onClose }: ModalInvestmentProp
       timer: 3000,
       timerProgressBar: true,
     });
+
+    onClose();
   };
 
   return (

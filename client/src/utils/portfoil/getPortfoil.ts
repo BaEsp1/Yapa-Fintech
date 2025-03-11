@@ -17,6 +17,7 @@ export const getPortfolios = async () => {
       }
     );
 
+    console.log(response)
     return response.data; 
     
   } catch (error) {

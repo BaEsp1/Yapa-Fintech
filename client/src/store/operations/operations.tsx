@@ -1,29 +1,38 @@
 import {create} from 'zustand';
-import axios from 'axios';
-const URL = process.env.NEXT_PUBLIC_API_URL
+import { fetchOperations , fetchCreateOperation } from '@/utils/operations/fetchsOperations';
 
 export interface Operation {
   symbol: string;
   date: string;
   price: number;
-  type: 'compra' | 'venta'; 
+  type:  'buy' | 'sell';
+}
+export interface Instrument {
+  name : string;
+  symbol: string;
+  type: string;
+  price: number;
+  currency: string;
+  quantity: number;
 }
 
 interface OperationsStore {
   operations: Operation[];
   loadOperations: () => void;
+  createOperation: (operationData: { instrument: Instrument, operationType: string, currency: string, subTotal: number , totalPrice : number}) => void;
 }
 
 const useOperationsStore = create<OperationsStore>((set) => ({
   operations: [] ,
   loadOperations: async () => {
-    try {
-      const response = await axios.get(`${URL}/api/operations`);
-      const data = response.data; 
-      console.log(data)
-      set({ operations: data }); 
-    } catch (error) {
-      console.error('Error al cargar operaciones:', error);
+    const data = await fetchOperations(); 
+    if (data) {
+      set({ operations: data });
+  }},
+  createOperation: async (operationData) => {
+    const response = await fetchCreateOperation(operationData);
+    if (response) {
+      set((state) => ({ operations: [...state.operations, response.operation] }));
     }
   },
 }));

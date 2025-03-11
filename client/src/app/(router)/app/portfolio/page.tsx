@@ -16,32 +16,34 @@ import { getPortfolios } from '@/utils/portfoil/getPortfoil'
 import TotalCard from './components/totalCard'
 import useOperationsStore from '@/store/operations/operations'
 import { Asset } from './components/AssetList'
+import useWalletStore from '@/store/balance/totalbalance'
 
 export default function Portfolio() {
 	const [activeTab, setActiveTab] = useState<'portfolio' | 'movements'>('portfolio')
   const { portfolios } = usePortfoilStore();
-  const myPortfolio = usePortfoilStore ((state)=> state.portfolios)
-  //Tengo un quilombito aca , tengo que filtrar mi portafolio en acciones y bonos para despues cargarlo aca
   const [bonos, setBonos] = useState<FinancialData[]>([]);
   const [cedears, setCedears] = useState<FinancialData[]>([]);
   const [loading, setLoading] = useState(true);  
   const loadAllVariablesData = marketStore((state) => state.loadAllVariablesData);
+  const bonosMKT = marketStore((state)=> state.bonos)
+  const accionesMKT = marketStore((state)=> state.cedears)
   const loadOperations = useOperationsStore((state) => state.loadOperations);
   const operations = useOperationsStore((state) => state.operations);
+  const totalInvestments = useWalletStore((state)=>state.totalBalance.invested)
   let mappedAssets : Asset[] = []
 
+  console.log(portfolios)
   useEffect(() => {
 
     if(loading){
     getPortfolios()
     loadAllVariablesData();
-    setBonos(myPortfolio.bonos)
-    setCedears(myPortfolio.acciones)
+    setBonos(bonosMKT)
+    setCedears(accionesMKT)
     loadOperations()
-          setLoading(false); 
+    setLoading(false); 
         }
- 
-  }, [bonos, cedears, loadAllVariablesData]);
+  }, []);
 
 
   if (loading) {
@@ -82,7 +84,6 @@ export default function Portfolio() {
 
   const totalBonos = investments[0].funds.reduce((total, fund) => total + fund.value, 0);
   const totalAcciones = investments[1].funds.reduce((total, fund) => total + fund.value, 0);
-  const totalInvestments = totalBonos + totalAcciones;
 
 
   const updatedInvestments = investments.map((investment) => {

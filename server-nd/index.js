@@ -64,7 +64,7 @@ app.use("/api", routes);
 
 (async () => {
   try {
-    await conn.sync({ force: false });
+    await conn.sync({ force: false});
     console.log("Base de datos sincronizada");
   } catch (error) {
     console.log("Error sincronizando la base de datos:", error);
