@@ -1,14 +1,15 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-  sequelize.define('Portfoil', {
+  const Portfoil = sequelize.define('Portfoil', {
     idPortfoil: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
     idUser: {
-      type: DataTypes.INTEGER,  
+      type: DataTypes.INTEGER, 
+      references: { model: 'Users', key: 'idUser' },
       allowNull: false,
     },
     totalPrice: {
@@ -16,6 +17,6 @@ module.exports = (sequelize) => {
       allowNull: false,
     },
   });
-
+  
+  return Portfoil;
 };
-

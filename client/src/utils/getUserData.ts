@@ -26,8 +26,8 @@ export const getUserData = async () => {
       photoUrl: userData.photoUrl,
       phoneNumber: userData.phoneNumber,
       birthDate: userData.birthDate,
-      registerDate: userData.registerDate,
-      roles: userData.roles,
+      registerDate: userData.createdAt,
+      roles: userData.role,
     });
 
     return { userData };

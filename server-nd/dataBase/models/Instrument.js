@@ -14,7 +14,7 @@ module.exports = (sequelize) => {
     quantity: {
       type: DataTypes.INTEGER,
       allowNull: false,
-  },
+    },
     name: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -26,6 +26,10 @@ module.exports = (sequelize) => {
     price: {  
       type: DataTypes.FLOAT,
       allowNull: false,
+    },
+    idPortfoil: {
+      type: DataTypes.INTEGER,
+      references: { model: 'Portfoils', key: 'idPortfoil' }, 
     },
   });
 

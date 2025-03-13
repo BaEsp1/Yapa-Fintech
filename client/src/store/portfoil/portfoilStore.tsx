@@ -1,17 +1,15 @@
-import {create} from 'zustand';
+import { create } from 'zustand';
 import { getPortfolios } from '@/utils/portfoil/getPortfoil'; 
-
+import { Instrument } from '../operations/operations';
 
 export interface Portfolio {
   id: number;
   quantity: number;
   purchasePrice: number;
   purchaseDate: string;
-  category: string;
-  object: [string, string, number, number]; // [name, detail, price, quantity]
-  userId: number;
+  type: string;
+  object: [string, string, number, number];
 }
-
 
 interface PortfoilStore {
   portfolios: Record<string, Portfolio[]>;  
@@ -21,39 +19,38 @@ interface PortfoilStore {
 }
 
 const usePortfoilStore = create<PortfoilStore>((set) => ({
-  portfolios: {},
+  portfolios: {},  
   loading: false,
   error: null,
-
 
   fetchPortfolios: async () => {
     set({ loading: true, error: null });
 
     try {
-      const data = await getPortfolios(); 
+      const data = await getPortfolios();  
 
-      const categorizedPortfolios = data.portfolios.reduce(
+      const categorizedPortfolios = data.instruments.reduce(
+        (acc: Record<string, Portfolio[]>, instrument: Instrument) => {
+          const { type, quantity, price, name, symbol, idPortfoil } = instrument;
 
-        (acc: Record<string, Portfolio[]>, portfolio: Portfolio) => {
-          const { category } = portfolio; 
+          const portfolioData: Portfolio = {
+            id: idPortfoil || 0,  
+            quantity,
+            purchasePrice: price,
+            purchaseDate: new Date().toISOString(),
+            object: [symbol,name, price, quantity],  
+            type,
+          };
 
-          if (!acc[category]) {
-            acc[category] = [];
+          if (!acc[type]) {
+            acc[type] = [];  
           }
 
-          acc[category].push({
-            id: portfolio.id,
-            quantity: portfolio.quantity,
-            purchasePrice: portfolio.purchasePrice,
-            purchaseDate: portfolio.purchaseDate,
-            userId: portfolio.userId,
-            object: portfolio.object, 
-            category: portfolio.category,
-          });
+          acc[type].push(portfolioData);
 
           return acc;
         },
-        {} as Record<string, Portfolio[]> 
+        {} as Record<string, Portfolio[]>  
       );
 
       set({ portfolios: categorizedPortfolios });

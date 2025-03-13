@@ -82,11 +82,13 @@ exports.register = async (req, res) => {
       totalBalance: 0,
     });
 
+    console.log("balance",newBalance)
     // Crear el portafolio con totalPrice en 0
     const newPortfoil = await Portfoil.create({
       idUser: newUser.idUser,
       totalPrice: 0,  
     });
+    console.log("newPortfoil",newPortfoil)
 
     // Generar un token para el usuario
     const token = generateToken(newUser);

@@ -1,120 +1,122 @@
-const { Operation, Portfoil, Balance, PortfoilInstrument, Instrument } = require('../../dataBase/dataBase');
+const { Operation, Portfoil, Balance, Instrument } = require('../../dataBase/dataBase');
 
 exports.createOperation = async (req, res) => {
-const { instrument, operationType, currency, subTotal, totalPrice } = req.body; // Ahora recibimos 'subTotal' y 'totalPrice' desde el frontend
-const userId = req.user.idUser;
-
-  try {
-      // Verificamos si el portafolio existe
-      const portfoil = await Portfoil.findOne({ where: {  idUser: userId } });
-      if (!portfoil) {
-          return res.status(404).json({ message: 'Portafolio no encontrado' });
-      }
-
-      const { name, symbol, price, quantity , type} = instrument;
-
-      // Verificamos si el instrumento ya existe en la base de datos
-      let existingInstrument = await Instrument.findOne({ where: { symbol } });
-
-      if (!existingInstrument) {
-          // Si el instrumento no existe, lo creamos
-          existingInstrument = await Instrument.create({
-              name,
-              symbol,
-              type,
-              price,
-              quantity
-          });
-      }
-
-      const idInstrument = existingInstrument.idInstrument; // El ID del instrumento, ya sea existente o recién creado
-
-      // Creamos la operación
-      await Operation.create({
-          idUser: userId,
-          type: operationType, // 'buy' o 'sell'
-          idInstrument,
-          quantity,
-          subTotal,  // Usamos el subTotal recibido
-          pricePerUnit: price,
-          currency,
-          totalPrice,  // Usamos el totalPrice recibido
+    const { instrument, operationType, currency, subTotal, totalPrice } = req.body;
+    const userId = req.user.idUser;
+  
+    try {
+      // Primero buscamos el portafolio del usuario, incluyendo los instrumentos
+      const portfoil = await Portfoil.findOne({
+        where: { idUser: userId },
+        include: [{
+          model: Instrument,
+          as: 'instruments',  // Este alias debe coincidir con la relación en tu modelo Portfoil
+        }],
+        raw: false,  // Aseguramos que sea false para que las relaciones se carguen correctamente
       });
-
-      const balance = await Balance.findOne({ where: { idUser: userId } });
-
+  
+      console.log("1", portfoil);  // Ver el portafolio antes de hacer cualquier cambio
+  
+      if (!portfoil) {
+        return res.status(404).json({ message: 'Portafolio no encontrado' });
+      }
+  
+      // Desestructuramos los valores del instrumento
+      const { name, symbol, price, quantity, type } = instrument;
+  
+      // Buscamos si el instrumento ya existe en la base de datos
+      let existingInstrument = await Instrument.findOne({ where: { symbol } });
+  
+      if (!existingInstrument) {
+        // Si no existe el instrumento, lo creamos y lo asociamos al portafolio
+        existingInstrument = await Instrument.create({
+          name,
+          symbol,
+          type,
+          price,
+          quantity,
+          idPortfoil: portfoil.idPortfoil,  // Lo asociamos al portafolio
+        });
+        console.log("Nuevo instrumento creado:", existingInstrument);
+      } else {
+        // Si ya existe el instrumento, actualizamos la cantidad y su precio si es necesario
+        existingInstrument.quantity += quantity;  // Sumamos la cantidad
+        existingInstrument.idPortfoil = portfoil.idPortfoil;  // Aseguramos que la relación esté establecida correctamente
+        await existingInstrument.save();
+        console.log("Instrumento existente actualizado:", existingInstrument);
+      }
+  
+      const idInstrument = existingInstrument.idInstrument;
+  
+      // Ahora creamos la operación (compra o venta)
+      await Operation.create({
+        idUser: userId,
+        type: operationType, // 'buy' o 'sell'
+        idInstrument,
+        quantity,
+        subTotal,
+        pricePerUnit: price,
+        currency,
+        totalPrice,
+      });
+  
+      // Realizamos la lógica de compra
       if (operationType === 'buy') {
-          // Verificamos si el instrumento ya existe en el portafolio
-          const portfoilInstrument = await PortfoilInstrument.findOne({
-              where: { idPortfoil: portfoil.idPortfoil, idInstrument },
-          });
-
-          if (portfoilInstrument) {
-              // Si ya existe, aumentamos la cantidad
-              portfoilInstrument.quantity += quantity;
-              await portfoilInstrument.save();
-          } else {
-              // Si no existe, lo agregamos
-              await PortfoilInstrument.create({
-                  idPortfoil: portfoil.idPortfoil,
-                  idInstrument,
-                  quantity,
-                  pricePerUnit: price,
-              });
+        // Actualizamos el portafolio
+        portfoil.totalPrice += totalPrice; // Incrementamos el total del portafolio
+        await portfoil.save();
+  
+        console.log("2", portfoil);  // Ver el portafolio después de la compra
+  
+        // Actualizamos el balance
+        const balance = await Balance.findOne({ where: { idUser: userId } });
+        balance.deposited -= totalPrice;  // Restamos lo que se ha gastado
+        balance.invested += totalPrice;   // Sumamos lo invertido
+        balance.totalBalance = balance.deposited + balance.saved + balance.invested;
+        await balance.save();
+  
+      } else if (operationType === 'sell') {
+        // Realizamos la venta
+        const existingInstrumentInPortfoil = portfoil.instruments.find(i => i.idInstrument === idInstrument);
+        if (existingInstrumentInPortfoil && existingInstrumentInPortfoil.quantity >= quantity) {
+          existingInstrumentInPortfoil.quantity -= quantity;
+  
+          if (existingInstrumentInPortfoil.quantity === 0) {
+            portfoil.instruments = portfoil.instruments.filter(i => i.idInstrument !== idInstrument);
           }
-
-          // Actualizamos el total del portafolio
-          portfoil.totalPrice += totalPrice
-
-          balance.deposited -= totalPrice;  
-          balance.invested += totalPrice;   
-
-          // Actualizar balance total
+  
+          // Actualizamos el total del portafolio con la venta
+          portfoil.totalPrice -= totalPrice;
+          await portfoil.save();
+  
+          // Actualizamos el balance
+          balance.deposited += totalPrice;  // Añadimos lo que hemos recibido de la venta
+          balance.invested -= totalPrice;   // Restamos lo invertido
           balance.totalBalance = balance.deposited + balance.saved + balance.invested;
           await balance.save();
-
-      } else if (operationType === 'sell') {
-          // Verificamos si el instrumento existe en el portafolio
-          const portfoilInstrument = await PortfoilInstrument.findOne({
-              where: { idPortfoil: portfoil.idPortfoil, idInstrument },
-          });
-
-          if (portfoilInstrument && portfoilInstrument.quantity >= quantity) {
-              // Si existe y hay suficiente cantidad para vender
-              portfoilInstrument.quantity -= quantity;
-              await portfoilInstrument.save();
-
-              // Si la cantidad es 0 después de la venta, eliminamos el instrumento
-              if (portfoilInstrument.quantity === 0) {
-                  await PortfoilInstrument.destroy({
-                      where: { idPortfoil: portfoil.idPortfoil, idInstrument },
-                  });
-              }
-
-              // Actualizamos el total del portafolio con la venta
-              portfoil.totalPrice -= totalPrice;
-
-              balance.deposited += totalPrice;  // Incrementar depositado con el total de la venta
-              balance.invested -= totalPrice;   // Restar de lo invertido
-
-              // Actualizar balance total
-              balance.totalBalance = balance.deposited + balance.saved + balance.invested;
-              await balance.save();
-          } else {
-              return res.status(400).json({ message: 'No tienes suficiente cantidad de instrumentos para vender.' });
-          }
+        } else {
+          return res.status(400).json({ message: 'No tienes suficiente cantidad de instrumentos para vender.' });
+        }
       }
-
-      // Guardamos los cambios del portafolio
-      await portfoil.save();
-      res.status(200).json({ message: 'Transacción procesada exitosamente', portfoil });
-  } catch (error) {
+  
+      // Devolvemos el portafolio actualizado en la respuesta, incluyendo la relación con instrumentos
+      const updatedPortfoil = await Portfoil.findOne({
+        where: { idUser: userId },
+        include: [{
+          model: Instrument,
+          as: 'instruments',  // Asegúrate de que este alias coincida con la relación en el modelo
+        }],
+        raw: false,  // Asegúrate de que esté en false para que Sequelize maneje las relaciones
+      });
+  
+      res.status(200).json({ message: 'Transacción procesada exitosamente', portfoil: updatedPortfoil });
+  
+    } catch (error) {
+      console.error(error);
       res.status(500).json({ message: 'Error al procesar la transacción', error });
-  }
-};
-
-
-
+    }
+  };
+  
 
 exports.getAllOperations = async (req, res) => {
     const userId = req.user.idUser; 

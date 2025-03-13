@@ -36,63 +36,35 @@ let capsEntries = entries.map(([key, value]) => [key.charAt(0).toUpperCase() + k
 sequelize.models = Object.fromEntries(capsEntries);
 
 
-const { User, Balance, Portfoil, Goal, Operation, PortfoilInstrument, FinancialProfile, Instrument } = sequelize.models;
+const { User, Balance, Portfoil, Goal, Operation, FinancialProfile , Instrument} = sequelize.models;
 
 // Relación User - Balance (un usuario tiene solo un balance)
 User.hasOne(Balance, { foreignKey: 'idUser' });
-// Balance.belongsTo(User, { foreignKey: 'idUser' });
-Balance.belongsTo(User, {foreignKey: "idUser", as: "user",
-});
+Balance.belongsTo(User, { foreignKey: "idUser", as: "user" });
 
 // Relación User - FinancialProfile (un usuario tiene solo un perfil financiero)
 User.hasOne(FinancialProfile, { foreignKey: 'idUser' });
-// FinancialProfile.belongsTo(User, { foreignKey: 'idUser' });
-FinancialProfile.belongsTo(User, {
-  foreignKey: "idUser",
-  as: "user",
-});
+FinancialProfile.belongsTo(User, { foreignKey: "idUser", as: "user" });
 
 // Relación User - Goal (un usuario puede tener muchas metas)
 User.hasMany(Goal, { foreignKey: 'idUser' });
-// Goal.belongsTo(User, { foreignKey: 'idUser' });
-Goal.belongsTo(User, {
-  foreignKey: "idUser",
-  as: "user",
-});
-
+Goal.belongsTo(User, { foreignKey: "idUser", as: "user" });
 
 // Relación User - Portfoil (un usuario tiene solo un portafolio)
 User.hasOne(Portfoil, { foreignKey: 'idUser' });
-// Portfoil.belongsTo(User, { foreignKey: 'idUser' });
-Portfoil.belongsTo(User, {
-  foreignKey: 'idUser',
-  as: 'user',
-});
+Portfoil.belongsTo(User, { foreignKey: 'idUser', as: 'user' });
 
 // Relación Portfoil - Instrument (un portafolio puede tener muchos instrumentos)
-Portfoil.belongsToMany(Instrument, { through: PortfoilInstrument, foreignKey: 'idPortfoil' });
-Instrument.belongsToMany(Portfoil, { through: PortfoilInstrument, foreignKey: 'idInstrument' });
+Portfoil.hasMany(Instrument, { foreignKey: 'idPortfoil', as: 'instruments' }); 
+Instrument.belongsTo(Portfoil, { foreignKey: 'idPortfoil', as: 'portfoil' });
 
 // Relación Operation - User (un usuario puede tener muchas operaciones)
 User.hasMany(Operation, { foreignKey: 'idUser' });
 Operation.belongsTo(User, { foreignKey: 'idUser' });
 
 // Relación Operation - Instrument (una operación está asociada a un instrumento)
-Operation.belongsTo(Instrument, { foreignKey: 'idInstrument' , as: 'instrument'});
-// Instrument.hasMany(Operation, { foreignKey: 'idInstrument' });
-Instrument.hasMany(Operation, {
-  foreignKey: 'idInstrument',  
-  as: 'operations',
-});
-
-// Relación many-to-many
-Portfoil.belongsToMany(Instrument, { through: 'PortfoilInstruments', foreignKey: 'idPortfoil' ,  as: 'instruments' });
-Instrument.belongsToMany(Portfoil, {
-  through: 'PortfoilInstruments',
-  foreignKey: 'idInstrument',
-  as: 'portfoils',
-});
-
+Operation.belongsTo(Instrument, { foreignKey: 'idInstrument', as: 'instrument' });
+Instrument.hasMany(Operation, { foreignKey: 'idInstrument', as: 'operations' });
 
 
 module.exports = {

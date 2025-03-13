@@ -2,10 +2,16 @@ import {create} from 'zustand';
 import { fetchOperations , fetchCreateOperation } from '@/utils/operations/fetchsOperations';
 
 export interface Operation {
+  idOperation:number;
   symbol: string;
   date: string;
   price: number;
+  currency?:string;
   type:  'buy' | 'sell';
+  instrument: Instrument;
+  createdAt : Date;
+  subTotal?:number;
+  totalPrice:number;
 }
 export interface Instrument {
   name : string;
@@ -14,6 +20,7 @@ export interface Instrument {
   price: number;
   currency: string;
   quantity: number;
+  idPortfoil?:number;
 }
 
 interface OperationsStore {
