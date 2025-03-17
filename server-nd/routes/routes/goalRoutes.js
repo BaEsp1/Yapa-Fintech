@@ -65,22 +65,60 @@ router.get('/:id', verifyToken, goalController.getGoalById);
  *           schema:
  *             type: object
  *             properties:
- *               title:
+ *               description:
  *                 type: string
- *               targetAmount:
+ *                 description: Descripción detallada de la meta.
+ *               objectiveType:
+ *                 type: string
+ *                 description: Tipo de objetivo (por ejemplo, "ahorro", "inversión").
+ *               frequency:
+ *                 type: string
+ *                 description: Frecuencia de la meta (por ejemplo, "mensual", "anual").
+ *               amountObjective:
  *                 type: number
+ *                 format: float
+ *                 description: Cantidad total que se desea alcanzar para el objetivo.
+ *               amount:
+ *                 type: number
+ *                 format: float
+ *                 description: Cantidad de dinero invertido.
+ *               targetDate:
+ *                 type: string
+ *                 format: date
+ *                 description: Fecha objetivo para alcanzar la meta.
  *               startDate:
  *                 type: string
  *                 format: date
+ *                 description: Fecha objetivo para alcanzar la meta.
+ *               status:
+ *                 type: string
+ *                 enum: [pending, in-progress, completed]
+ *                 default: pending
+ *                 description: Estado de la meta (por ejemplo, "pendiente", "en progreso", "completada").
+ *               progress:
+ *                 type: number
+ *                 format: float
+ *                 description: Porcentaje de progreso (debe estar entre 0 y 100).
  *     responses:
  *       201:
  *         description: Meta creada exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Meta de ahorro creada exitosamente."
+ *                 goal:
+ *                   $ref: '#/components/schemas/Goal'
  *       400:
- *         description: Error al crear la meta
+ *         description: Error al crear la meta debido a datos inválidos o faltantes
  *       500:
  *         description: Error interno del servidor
  */
 router.post('/', verifyToken, goalController.createGoal);
+
 
 /**
  * @swagger

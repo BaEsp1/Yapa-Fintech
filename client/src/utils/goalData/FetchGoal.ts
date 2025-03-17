@@ -11,7 +11,8 @@ export const apiGoal = {
 
 	getAll: async () => {
 		try {
-			const { data } = await axios.get(`${API_URL}/api/goals`, {
+			// console.log("token", token)
+			const { data } = await axios.get(`${API_URL}/api/goals/`, {
 				headers: {
 				  Authorization: `Bearer ${token}`,
 			}})
@@ -57,7 +58,7 @@ export const apiGoal = {
 				headers: {
 				  Authorization: `Bearer ${token}`,
 			}})
-			useGoalStore.getState().setGoal(null)
+			useGoalStore.getState().setGoal([])
 			return true
 		} catch (error) {
 			console.error('Error deleting goal:', error)

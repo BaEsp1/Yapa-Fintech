@@ -1,33 +1,38 @@
 import { create } from 'zustand'
-
 export interface Goal {
-	description: string
-	amountObjective: number
-	frequency: string
-	startDate: string
-	targetDate: string
-	objectiveType: string
+  idGoal: number; 
+  description: string
+  amountObjective: number
+  amount: number
+  frequency: string
+  startDate: Date
+  targetDate: Date
+  objectiveType: string
+  progress: number
+  status: string
 }
 
 export interface GoalStore {
-	goal: Goal | null
-	createGoal: (goal: Goal) => void
-	updateGoal: (goal: Partial<Goal>) => void
-	deleteGoal: () => void
-	setGoal: (goal: Goal | null) => void
+  goal: Goal[]; 
+  createGoal: (goal: Goal) => void
+  updateGoal: (goal: Partial<Goal>) => void
+  deleteGoal: () => void
+  setGoal: (goal: Goal[]) => void 
 }
 
 export const useGoalStore = create<GoalStore>((set) => ({
-	goal: null,
+  goal: [], 
 
-	createGoal: (goal) => set({ goal }),
+  createGoal: (goal) => set((state) => ({ goal: [...state.goal, goal] })), // `state` debe ser pasado aquí
 
-	updateGoal: (updatedFields) =>
-		set((state) => ({
-			goal: state.goal ? { ...state.goal, ...updatedFields } : null,
-		})),
+  updateGoal: (updatedFields) =>
+    set((state) => ({
+      goal: state.goal.map((g) =>
+        g.idGoal === updatedFields.idGoal ? { ...g, ...updatedFields } : g
+      ),
+    })),
 
-	deleteGoal: () => set({ goal: null }),
+  deleteGoal: () => set({ goal: [] }),
 
-	setGoal: (goal) => set({ goal }),
+  setGoal: (goal) => set({ goal }) 
 }))

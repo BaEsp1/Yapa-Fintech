@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import PasswordRequirements from '@/components/PasswordRequirements';
+import PasswordRequirements from '@/components/cards/PasswordRequirements';
 import { FormikProps } from 'formik';
 import { FormValues } from './EmailStep';
 import Button from '@/components/ui/Button';

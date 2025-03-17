@@ -30,19 +30,48 @@ exports.getGoalById = async (req, res) => {
 // Crear una nueva goal
 exports.createGoal = async (req, res) => {
   try {
-    const { title, description, targetDate } = req.body;
+    const {  
+      description, 
+      amountObjective, 
+      frequency, 
+      startDate,
+      targetDate, 
+      objectiveType, 
+      amount = 0,
+      status = 'pending', 
+      progress = 0        
+    } = req.body;
+    
     const userId = req.user.idUser;
 
-    if (!title ) {
-      return res.status(400).json({ message: "Título es obligatorio." });
+    // Validaciones
+
+    if (!description) {
+      return res.status(400).json({ message: "Descripción es obligatoria." });
+    }
+    if (!objectiveType) {
+      return res.status(400).json({ message: "Tipo de objetivo es obligatorio." });
+    }
+    if (!frequency) {
+      return res.status(400).json({ message: "Frecuencia es obligatoria." });
+    }
+    if (amountObjective === undefined || amountObjective <= 0) {
+      return res.status(400).json({ message: "Cantidad del objetivo es obligatoria y debe ser mayor a 0." });
     }
 
+
+    // Crear nueva meta
     const newGoal = await Goal.create({
-      title,
       description,
+      amount,
+      objectiveType,
+      frequency,
+      amountObjective,
+      startDate,
       targetDate,
-      status: 'pending',
-      userId
+      status,
+      progress,
+      idUser: userId
     });
 
     res.status(201).json({
@@ -56,10 +85,20 @@ exports.createGoal = async (req, res) => {
 };
 
 
+
 // Actualizar una goal
 exports.updateGoal = async (req, res) => {
   const { id } = req.params;
-  const { title, description, targetDate, status } = req.body;
+  const {  
+    description, 
+    amount,  
+    frequency, 
+    startDate, 
+    targetDate, 
+    objectiveType, 
+    status, 
+    progress 
+  } = req.body;
 
   try {
     const goal = await Goal.findByPk(id);
@@ -68,19 +107,55 @@ exports.updateGoal = async (req, res) => {
       return res.status(404).json({ message: 'Goal no encontrada' });
     }
 
-    goal.title = title || goal.title;
+    if (amount !== undefined) {
+      const previousAmount = goal.amount; 
+      goal.amount = +amount;
+
+      if (goal.amountObjective > 0) {
+        goal.progress = (goal.amount / goal.amountObjective) * 100;
+      }
+
+      if (goal.amount < previousAmount) {
+        goal.progress = (goal.amount / goal.amountObjective) * 100;
+      }
+    }
+
+    if (progress !== undefined) {
+      if (progress < 0 || progress > 100) {
+        return res.status(400).json({ message: 'El progreso debe estar entre 0 y 100.' });
+      }
+      goal.progress = progress;
+    }
+
+    // Actualización de los demás campos solo si los nuevos valores son proporcionados
     goal.description = description || goal.description;
+    goal.frequency = frequency || goal.frequency;
+    goal.startDate = startDate || goal.startDate;
     goal.targetDate = targetDate || goal.targetDate;
+    goal.objectiveType = objectiveType || goal.objectiveType;
     goal.status = status || goal.status;
-    goal.progress = progress !== undefined ? progress : goal.progress; 
 
-    await goal.save();
+    // Validaciones
+    if (amount !== undefined && goal.amount < 0) {
+      return res.status(400).json({ message: 'La cantidad invertida debe ser mayor o igual a 0.' });
+    }
+    if (goal.amountObjective <= 0) {
+      return res.status(400).json({ message: 'El objetivo de cantidad (amountObjective) debe ser mayor a 0.' });
+    }
+    if (goal.progress < 0 || goal.progress > 100) {
+      return res.status(400).json({ message: 'El progreso debe estar entre 0 y 100.' });
+    }
 
-    res.status(200).json({ message: 'Goal actualizada', goal });
+    await goal.save(); 
+
+    res.status(200).json({ message: 'Meta actualizada', goal });
   } catch (error) {
+    console.error("Error al actualizar la goal:", error);
     res.status(500).json({ message: 'Error al actualizar la goal', error });
   }
 };
+
+
 
 // Eliminar una goal
 exports.deleteGoal = async (req, res) => {

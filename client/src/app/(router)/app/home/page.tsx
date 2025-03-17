@@ -12,6 +12,7 @@ import getUserProfile from '@/utils/financialProfile/getProfile';
 import dynamic from "next/dynamic";
 import Loading from '@/components/animations/Loader/loader';
 import useWalletStore from '@/store/balance/totalbalance';
+import { apiGoal } from '@/utils/goalData/FetchGoal';
 
 const Onbording = dynamic(() => import('@/components/modal/Onbording/onbording'), { ssr: false });
 const FinancialSampleCard = dynamic(() => import('@/components/cards/FinancialSampleCard'), { ssr: false });
@@ -39,6 +40,7 @@ export default function Home() {
     loadBalanceData();
     getPortfolios();
     getUserData();
+    apiGoal.getAll();
     fetchProfile();
   }, []);
 

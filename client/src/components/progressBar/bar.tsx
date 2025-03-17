@@ -5,8 +5,8 @@ import Image from 'next/image';
 interface ProgressBarProps {
   currentStep: number;
   totalSteps: number;
-  onNext: () => void;
-  onPrevious: () => void;
+  onNext?: () => void;
+  onPrevious?: () => void;
 }
 
 const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep, totalSteps, onNext, onPrevious }) => {

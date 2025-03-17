@@ -1,4 +1,4 @@
-const { DataTypes } = require('sequelize');
+const { DataTypes } = require('sequelize'); 
 
 module.exports = (sequelize) => {
   const Goal = sequelize.define('Goal', {
@@ -25,6 +25,14 @@ module.exports = (sequelize) => {
     },
     amountObjective: {
       type: DataTypes.FLOAT, 
+      allowNull: false,
+    },
+    amount: {
+      type: DataTypes.FLOAT, 
+      allowNull: false,
+    },
+    startDate: {
+      type: DataTypes.DATE,
       allowNull: false,
     },
     targetDate: {
