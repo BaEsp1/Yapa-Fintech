@@ -1,4 +1,4 @@
-const { Goal } = require('../../dataBase/dataBase');
+const { Goal , Balance} = require('../../dataBase/dataBase');
 
 // Obtener todas las goals
 exports.getAllGoals = async (req, res) => {
@@ -168,10 +168,120 @@ exports.deleteGoal = async (req, res) => {
       return res.status(404).json({ message: 'Goal no encontrada' });
     }
 
-    await goal.destroy();
+    if (goal.amount > 0) {
 
+      const userId = req.user.idUser;
+      const balance = await Balance.findOne({ where: { idUser: userId } });
+
+      if (!balance) {
+        return res.status(404).json({ message: 'Balance no encontrado' });
+      }
+
+      balance.deposited += goal.amount;
+      balance.saved -= goal.amount;
+
+      await balance.save();
+
+    }
+
+    await goal.destroy();
     res.status(200).json({ message: 'Goal eliminada' });
   } catch (error) {
     res.status(500).json({ message: 'Error al eliminar la goal', error });
+  }
+};
+
+// Depositar dinero en una Meta
+exports.depositToGoal = async (req, res) => {
+  const { id } = req.params;
+  const { amount } = req.body;
+  const amountAux = Number(amount);
+
+  if (isNaN(amountAux) || amountAux <= 0) {
+    return res.status(400).json({ message: 'Monto inválido' });
+  }
+
+  try {
+    const userId = req.user.idUser;
+    const balance = await Balance.findOne({ where: { idUser: userId } });
+
+    if (!balance) {
+      return res.status(404).json({ message: 'Balance no encontrado' });
+    }
+
+    if (balance.deposited < amountAux) {
+      return res.status(400).json({ message: 'Saldo insuficiente para depositar en meta' });
+    }
+
+    const goal = await Goal.findByPk(id);
+    if (!goal) {
+      return res.status(404).json({ message: 'Meta no encontrada' });
+    }
+
+    goal.amount += amountAux;
+
+    if (goal.amountObjective > 0) {
+      goal.progress = (goal.amount / goal.amountObjective) * 100;
+
+      if (goal.progress >= 100) {
+        goal.progress = 100; 
+        goal.status = "completed"; 
+      }
+    }
+
+    balance.deposited -= amountAux;
+    balance.totalBalance = balance.deposited + balance.saved + balance.invested;
+
+    await goal.save();
+    await balance.save();
+
+    res.status(200).json({ message: 'Dinero depositado exitosamente en la meta', goal, balance });
+  } catch (error) {
+    console.error("Error al depositar dinero en la meta:", error);
+    res.status(500).json({ message: 'Error al depositar dinero en la meta', error });
+  }
+};
+
+
+// Retirar dinero de una Meta
+exports.withdrawFromGoal = async (req, res) => {
+  const { id } = req.params;
+  const { amount } = req.body; 
+  const amountAux = Number(amount);
+
+  if (isNaN(amountAux) || amountAux <= 0) {
+    return res.status(400).json({ message: 'Monto inválido' });
+  }
+
+  try {
+    const userId = req.user.idUser;
+    const balance = await Balance.findOne({ where: { idUser: userId } });
+
+    if (!balance) {
+      return res.status(404).json({ message: 'Balance no encontrado' });
+    }
+
+    const goal = await Goal.findByPk(id);
+    if (!goal) {
+      return res.status(404).json({ message: 'Meta no encontrada' });
+    }
+
+    if (goal.amount < amountAux) {
+      return res.status(400).json({ message: 'Saldo insuficiente en la meta para retirar' });
+    }
+
+    goal.amount -= amountAux;
+
+    balance.deposited += amountAux;
+    balance.totalBalance = balance.deposited + balance.saved + balance.invested;
+
+    await goal.save();
+    await balance.save();
+
+
+    res.status(200).json({ message: 'Dinero retirado exitosamente de la meta', goal, balance });
+  } catch (error) {
+    console.error("Error al retirar dinero de la meta:", error);
+    res.status(500).json({ message: 'Error al retirar dinero de la meta', error });
   }
 };

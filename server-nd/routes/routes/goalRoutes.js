@@ -178,4 +178,98 @@ router.put('/:id', verifyToken, goalController.updateGoal);
  */
 router.delete('/:id', verifyToken, goalController.deleteGoal);
 
+/**
+ * @swagger
+ * /goals/{id}/deposit:
+ *   put:
+ *     summary: Depositar dinero en una meta
+ *     tags: [Metas]
+ *     security:
+ *     - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               amount:
+ *                 type: number
+ *                 description: Monto a depositar en la meta
+ *                 example: 100.50
+ *     responses:
+ *       200:
+ *         description: Dinero depositado exitosamente en la meta
+ *         content:
+ *           application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               message:
+ *                 type: string
+ *                 example: 'Dinero depositado exitosamente en la meta'
+ *               goal:
+ *                 type: object
+ *                 description: Meta actualizada
+ *                 $ref: '#/components/schemas/Goal'
+ *               balance:
+ *                 type: object
+ *                 description: Balance actualizado
+ *                 $ref: '#/components/schemas/Balance'
+ *       400:
+ *         description: Saldo insuficiente o monto inválido
+ *       404:
+ *         description: Meta o balance no encontrado
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.put('/:id/deposit', verifyToken, goalController.depositToGoal);
+
+/**
+ * @swagger
+ * /goals/{id}/withdraw:
+ *   put:
+ *     summary: Retirar dinero de una meta
+ *     tags: [Metas]
+ *     security:
+ *     - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               amount:
+ *                 type: number
+ *                 description: Monto a retirar de la meta
+ *                 example: 50.00
+ *     responses:
+ *       200:
+ *         description: Dinero retirado exitosamente de la meta
+ *         content:
+ *           application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               message:
+ *                 type: string
+ *                 example: 'Dinero retirado exitosamente de la meta'
+ *               goal:
+ *                 type: object
+ *                 description: Meta actualizada
+ *                 $ref: '#/components/schemas/Goal'
+ *               balance:
+ *                 type: object
+ *                 description: Balance actualizado
+ *                 $ref: '#/components/schemas/Balance'
+ *       400:
+ *         description: Saldo insuficiente en la meta o monto inválido
+ *       404:
+ *         description: Meta o balance no encontrado
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.put('/:id/withdraw', verifyToken, goalController.withdrawFromGoal);
+
 module.exports = router;

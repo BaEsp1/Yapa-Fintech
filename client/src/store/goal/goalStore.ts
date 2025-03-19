@@ -23,7 +23,7 @@ export interface GoalStore {
 export const useGoalStore = create<GoalStore>((set) => ({
   goal: [], 
 
-  createGoal: (goal) => set((state) => ({ goal: [...state.goal, goal] })), // `state` debe ser pasado aquí
+  createGoal: (goal) => set((state) => ({ goal: [...state.goal, goal] })), 
 
   updateGoal: (updatedFields) =>
     set((state) => ({

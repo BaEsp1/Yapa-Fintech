@@ -90,7 +90,7 @@ export default function GoalCard() {
                 {/* Icon and progress */}
                 <div className='flex flex-col place-items-center space-y-1'>
                   <h1 className='text-h2-regular'>{icon}</h1>
-                  <p className='text-p3-medium'>Progreso {goal.progress}%</p>
+                  <p className='text-p2-medium'>Progreso {goal.progress.toFixed(2)}%</p>
                 </div>
               </div>
             );

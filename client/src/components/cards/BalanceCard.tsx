@@ -14,7 +14,7 @@ export default function BalanceCard() {
     ? tasaDeInteresBCRA[tasaDeInteresBCRA.length - 1].valor
     : 0;
 
-
+  console.log(totalBalance)
   const earning = totalBalance.deposited * lastExchangeRate/100;
 
   return (
@@ -48,7 +48,7 @@ export default function BalanceCard() {
               <CurrencySwitchBtn />
             </div>
             <div className='space-y-3'>
-              <h3 className='text-h3-bold'>$ {totalBalance.deposited.toLocaleString()}</h3>
+              <h3 className='text-h3-bold'>$ {totalBalance?.deposited?.toLocaleString()}</h3>
               <p className='text-p1-regular text-white600'>
                 <span className='text-success700'> + $ {earning.toLocaleString()}</span> en 12 meses
               </p>

@@ -2,14 +2,14 @@ import React from 'react'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { apiGoal } from '@/utils/goalData/FetchGoal'
-// import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import Label from '@/components/ui/Label'
 import Input from '@/components/ui/Input'
 import Button from '@/components/ui/Button'
 import Swal from 'sweetalert2'
 
 export default function GoalForm() {
-	// const router = useRouter();
+	const router = useRouter();
 
 	const objectives = [
 		'Proyecto personal', 'Educacion', 'Celebracion', 'Comprar un vehiculo',
@@ -37,7 +37,7 @@ export default function GoalForm() {
 			amountObjective: 0,
 			frequency: '',
 			startDate: new Date(),
-			targetDate: new Date() ,
+			targetDate: new Date(),
 			objectiveType: '' ,
 			idGoal: 0,
 			amount: 0,
@@ -54,7 +54,7 @@ export default function GoalForm() {
 					showConfirmButton: false,
 					timer: 1500
 				})
-				// router.push('/app/home');
+				router.push('/app/home');
 			} catch (error) {
 				console.log(error);
 			}
@@ -91,7 +91,7 @@ export default function GoalForm() {
 							name='startDate'
 							className='w-full p-3 border rounded-md'
 							onChange={formik.handleChange}
-							value={formik.values.startDate.toISOString().split('T')[0]}
+							value={new Date(formik.values.startDate).toISOString().split('T')[0]} 
 						/>
 					</div>
 					<div className='flex'>
@@ -102,7 +102,7 @@ export default function GoalForm() {
 							name='targetDate'
 							className='w-full p-3 border rounded-md'
 							onChange={formik.handleChange}
-							value={formik.values.targetDate.toISOString().split('T')[0]}
+							value={new Date(formik.values.targetDate).toISOString().split('T')[0]} 
 						/>
 					</div>
 				</div>

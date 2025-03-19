@@ -39,6 +39,14 @@ export const apiGoal = {
 	},
 
 	update: async (id: number, goalData: Partial<Goal>) => {
+//Problemas con editar el monto objetivo!!
+		if (typeof goalData.amountObjective === 'string') {
+			goalData.amountObjective = parseFloat(goalData.amountObjective);
+		} else if (typeof goalData.amountObjective === 'number') {
+			goalData.amountObjective = goalData.amountObjective;
+		}
+		
+		console.log("goalData",goalData)
 		try {
 			const { data } = await axios.put(`${API_URL}/api/goals/${id}`, goalData,  {
 				headers: {
@@ -52,12 +60,48 @@ export const apiGoal = {
 		}
 	},
 
+	deposit: async (id: number, amount: number) => {
+		try {
+		  const { data } = await axios.put(`${API_URL}/api/goals/${id}/deposit`, { amount }, {
+			headers: {
+			  Authorization: `Bearer ${token}`,
+			},
+		  });
+	  
+		  useGoalStore.getState().setGoal(data.goal);
+	  
+		  return data;
+		} catch (error) {
+		  console.error('Error depositando en la meta:', error);
+		  return null;
+		}
+	  },
+	  
+
+	  withdrawal: async (id: number, amount: number) => {
+		try {
+		  const { data } = await axios.put(`${API_URL}/api/goals/${id}/withdraw`, { amount }, {
+			headers: {
+			  Authorization: `Bearer ${token}`,
+			},
+		  });
+	  
+		  useGoalStore.getState().setGoal(data.goal);
+	  
+		  return data;
+		} catch (error) {
+		  console.error('Error retirando de la meta:', error);
+		  return null;
+		}
+	  },
+
 	delete: async (id: number) => {
 		try {
 			await axios.delete(`${API_URL}/api/goals/${id}`,  {
 				headers: {
 				  Authorization: `Bearer ${token}`,
 			}})
+
 			useGoalStore.getState().setGoal([])
 			return true
 		} catch (error) {

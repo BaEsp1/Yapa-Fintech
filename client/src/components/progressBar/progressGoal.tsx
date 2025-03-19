@@ -23,7 +23,7 @@ export const GrowthProgressBar: React.FC<ProgressBarProps> = ({ currentStep, tot
             ></div>
         </div>
 
-        <h2 className="text-accent400 text-p2-regular">{progress + "%"}</h2>
+        <h2 className="text-accent400 text-p2-regular">{progress.toFixed(2) + "%"}</h2>
     </div>
   );
 };
