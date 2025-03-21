@@ -1,3 +1,4 @@
+'use client'
 import Link from 'next/link'
 import React, { useEffect } from 'react'
 import Button from '../ui/Button'
@@ -31,29 +32,32 @@ export default function RecommendationCard() {
 	  ? recommendations.map((recommendation, index) => (
         <><div key={index} className='mt-4'>
           <h6 className='text-h6-semibold'>{recommendation.instrument}</h6>
-          {recommendation.items?.map((item, subIndex) => (
-            <div key={subIndex} className='flex items-center justify-between mt-4 bg-transparent'>
-              <div>
-                <p className='text-p1-semibold'>{item?.label}</p>
-                <p className='text-p3-regular text-white700'>{item?.description}</p>
+          {recommendation.items?.map((item, subIndex) => (<>
+            <Link href={`/app/portfolio/detail/${item?.symbol}`}>
+              <div key={subIndex} className='flex items-center justify-between mt-4 bg-transparent'>
+                <div>
+                  <p className='text-p1-semibold'>{item?.label}</p>
+                  <p className='text-p3-regular text-white700'>{item?.description}</p>
+                </div>
+                <div className='text-center'>
+                  <p className='text-p2-semibold text-white400'>
+                    Crecimiento de
+                    <br />
+                    <span className='text-success700'> + {item?.percentage} %</span>
+                  </p>
+                </div>
               </div>
-              <div className='text-center'>
-                <p className='text-p2-semibold text-white400'>
-                  Crecimiento de
-                  <br />
-                  <span className='text-success700'> + {item?.percentage} %</span>
-                </p>
-              </div>
-            </div>
+            </Link>
+            </>
           ))}
         </div>
 		      <div className='flex items-center justify-center w-full space-x-4'>
-			  <Link href={'#'} passHref className='w-full'>
+			  <Link href={'/app/portfolio/#market'} passHref className='w-full'>
 				<Button size='medium' className='rounded-3xl w-full bg-accent25'>
 				  Ver más
 				</Button>
 			  </Link>
-			  <Link href={'#'} passHref className='w-full'>
+			  <Link href={'/app/profile'} passHref className='w-full'>
 				<Button size='medium' variant='outline' className='rounded-3xl w-full bg-white100 border-none shadow-sm text-white900'>
 				  Editar
 				</Button>

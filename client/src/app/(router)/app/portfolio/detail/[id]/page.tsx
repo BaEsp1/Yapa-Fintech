@@ -10,6 +10,7 @@ import { PerformanceInstrument } from "@/components/cards/PerformanceIntrument";
 import { InvestmentCard } from "@/components/cards/InvestmentCard";
 import useWalletStore from "@/store/balance/totalbalance";
 import Loading from "@/components/animations/Loader/loader";
+import usePortfoilStore from "@/store/portfoil/portfoilStore";
 
 export default function DetailInstruments () {
     const loadAllVariablesData = marketStore((state) => state.loadAllVariablesData);
@@ -21,6 +22,8 @@ export default function DetailInstruments () {
     const bonos = marketStore((state) => state.bonos);
     const actions = marketStore((state) => state.cedears);
     const market = [bonos, actions];
+    const fetchPortfolios = usePortfoilStore((state)=>state.fetchPortfolios)
+    const portfoils = usePortfoilStore((state)=>state.portfolios)
     
     const [loading, setLoading] = useState(true);
 
@@ -30,7 +33,7 @@ export default function DetailInstruments () {
         setLoading(true);
         loadAllVariablesData();
         loadBalanceData();
-        
+        fetchPortfolios()
         const timer = setTimeout(() => {
             setLoading(false);
         }, 2000); 
@@ -68,7 +71,7 @@ export default function DetailInstruments () {
                 <PerformanceInstrument id={id} market={market} />
             </section>
             <section>
-                <InvestmentCard id={id} market={market} moneyWallet={moneyWallet} usd={usd} />
+                <InvestmentCard id={id} market={market} moneyWallet={moneyWallet} usd={usd} portfoil={portfoils} />
             </section>
         </main>
     );

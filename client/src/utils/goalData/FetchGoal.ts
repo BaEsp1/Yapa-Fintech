@@ -39,14 +39,13 @@ export const apiGoal = {
 	},
 
 	update: async (id: number, goalData: Partial<Goal>) => {
-//Problemas con editar el monto objetivo!!
+
 		if (typeof goalData.amountObjective === 'string') {
 			goalData.amountObjective = parseFloat(goalData.amountObjective);
 		} else if (typeof goalData.amountObjective === 'number') {
 			goalData.amountObjective = goalData.amountObjective;
 		}
 		
-		console.log("goalData",goalData)
 		try {
 			const { data } = await axios.put(`${API_URL}/api/goals/${id}`, goalData,  {
 				headers: {

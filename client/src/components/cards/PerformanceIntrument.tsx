@@ -1,3 +1,4 @@
+'use client'
 import { BarChartBig } from "../graphs/BarChartBig";
 import { InstrumentProps } from "./GeneralInformation";
 

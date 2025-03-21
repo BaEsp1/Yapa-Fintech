@@ -1,5 +1,5 @@
 import {create} from 'zustand';
-import { fetchOperations , fetchCreateOperation } from '@/utils/operations/fetchsOperations';
+import { fetchOperations , fetchSellOperation , fetchBuyOperation } from '@/utils/operations/fetchsOperations';
 
 export interface Operation {
   idOperation:number;
@@ -21,12 +21,14 @@ export interface Instrument {
   currency: string;
   quantity: number;
   idPortfoil?:number;
+  purchasePrice?:number
 }
 
 interface OperationsStore {
   operations: Operation[];
   loadOperations: () => void;
-  createOperation: (operationData: { instrument: Instrument, operationType: string, currency: string, subTotal: number , totalPrice : number}) => void;
+  sellOperation: (operationData: { instrument: Instrument, operationType: string, currency: string, subTotal: number , totalPrice : number}) => void;
+  buyOperation: (operationData: { instrument: Instrument, operationType: string, currency: string, subTotal: number , totalPrice : number}) => void;
 }
 
 const useOperationsStore = create<OperationsStore>((set) => ({
@@ -36,8 +38,14 @@ const useOperationsStore = create<OperationsStore>((set) => ({
     if (data) {
       set({ operations: data });
   }},
-  createOperation: async (operationData) => {
-    const response = await fetchCreateOperation(operationData);
+  sellOperation: async (operationData) => {
+    const response = await fetchSellOperation(operationData);
+    if (response) {
+      set((state) => ({ operations: [...state.operations, response.operation] }));
+    }
+  },
+  buyOperation: async (operationData) => {
+    const response = await fetchBuyOperation(operationData);
     if (response) {
       set((state) => ({ operations: [...state.operations, response.operation] }));
     }

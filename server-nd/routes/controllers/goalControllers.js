@@ -91,13 +91,12 @@ exports.updateGoal = async (req, res) => {
   const { id } = req.params;
   const {  
     description, 
-    amount,  
+    amount,
+    amountObjective,
     frequency, 
     startDate, 
     targetDate, 
     objectiveType, 
-    status, 
-    progress 
   } = req.body;
 
   try {
@@ -120,20 +119,25 @@ exports.updateGoal = async (req, res) => {
       }
     }
 
-    if (progress !== undefined) {
-      if (progress < 0 || progress > 100) {
-        return res.status(400).json({ message: 'El progreso debe estar entre 0 y 100.' });
+    if (amountObjective && amountObjective > 0) {
+      
+      goal.progress = (goal.amount / amountObjective)*100
+
+      if (goal.amount >= amountObjective){
+        goal.progress= 100
+        goal.status = "completed"
       }
-      goal.progress = progress;
+
+    }else {
+      return res.status(400).json({ message: 'El monto objetivo debe ser mayor a 0 ' });
     }
 
-    // Actualización de los demás campos solo si los nuevos valores son proporcionados
     goal.description = description || goal.description;
     goal.frequency = frequency || goal.frequency;
     goal.startDate = startDate || goal.startDate;
     goal.targetDate = targetDate || goal.targetDate;
     goal.objectiveType = objectiveType || goal.objectiveType;
-    goal.status = status || goal.status;
+    goal.amountObjective = amountObjective || goal.amountObjective
 
     // Validaciones
     if (amount !== undefined && goal.amount < 0) {
@@ -219,6 +223,7 @@ exports.depositToGoal = async (req, res) => {
     }
 
     goal.amount += amountAux;
+    goal.status = 'in-progress'
 
     if (goal.amountObjective > 0) {
       goal.progress = (goal.amount / goal.amountObjective) * 100;

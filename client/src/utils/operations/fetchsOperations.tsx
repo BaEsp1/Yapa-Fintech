@@ -29,12 +29,36 @@ export const fetchOperations = async() =>{
     totalPrice: number;
   }
   
-  export const fetchCreateOperation = async (operationData: OperationRequest) => {
+  export const fetchBuyOperation = async (operationData: OperationRequest) => {
     const userLogged = JSON.parse(Cookies.get('userLogged') || '{}');
     const token = userLogged.token
 
     try {
-      const response = await axios.post(`${URL}/api/operations/operations`, operationData ,{
+      const response = await axios.post(`${URL}/api/operations/operations/buy`, operationData ,{
+        headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+  
+      if (!response) {
+        throw new Error('Error al realizar la operación');
+      }
+
+      const data = response.data
+      return data;  
+
+    } catch (error) {
+      console.error(error);
+      return null; 
+    }
+  };
+
+  export const fetchSellOperation = async (operationData: OperationRequest) => {
+    const userLogged = JSON.parse(Cookies.get('userLogged') || '{}');
+    const token = userLogged.token
+
+    try {
+      const response = await axios.post(`${URL}/api/operations/operations/sell`, operationData ,{
         headers: {
         Authorization: `Bearer ${token}`
       }

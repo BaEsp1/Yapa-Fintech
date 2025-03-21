@@ -7,8 +7,9 @@ export interface Portfolio {
   quantity: number;
   purchasePrice: number;
   purchaseDate: string;
+  currency:string;
   type: string;
-  object: [string, string, number, number];
+  object: [string, string, number, number]; // [name, detail, price, quantity]
 }
 
 interface PortfoilStore {
@@ -31,11 +32,12 @@ const usePortfoilStore = create<PortfoilStore>((set) => ({
 
       const categorizedPortfolios = data.instruments.reduce(
         (acc: Record<string, Portfolio[]>, instrument: Instrument) => {
-          const { type, quantity, price, name, symbol, idPortfoil } = instrument;
+          const { type, quantity, price, name, symbol, idPortfoil ,currency} = instrument;
 
           const portfolioData: Portfolio = {
             id: idPortfoil || 0,  
             quantity,
+            currency,
             purchasePrice: price,
             purchaseDate: new Date().toISOString(),
             object: [symbol,name, price, quantity],  
