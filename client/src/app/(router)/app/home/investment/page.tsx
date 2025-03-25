@@ -1,14 +1,21 @@
 "use client";
 import { ArrowLargeLeft } from "@/assets"
 import { CardDataInvestment } from "@/components/cards/CardDataInvestment";
+import Button from "@/components/ui/Button";
+import { updateDepositedAmount } from "@/utils/balance/FetchBalance";
 import {  ArrowForwardIos } from "@mui/icons-material"
 import Image from "next/image"
 import { redirect } from "next/navigation";
-import { useState } from "react";
+import {  useState } from "react";
+import useWalletStore from "@/store/balance/totalbalance";
+import Link from "next/link";
 
 function Investment (){
 
     const [data, setData] = useState("");
+    const deposited = useWalletStore((state) => state.totalBalance.deposited);
+    const update = useWalletStore((state) => state.loadBalanceData);
+
 
     const handleChangeTransferencia = () =>{
         setData("Transferencia")
@@ -25,6 +32,11 @@ function Investment (){
         setData("")
     }
 
+    const handleMoneyFree = async () =>{
+        await updateDepositedAmount()
+        update()
+    }
+
     return(<>
     <main className="p-3 pt-4">
         {data !== "" && (
@@ -33,10 +45,12 @@ function Investment (){
         {data === "" && 
 
         <section >
+            <Link href="/app/home">
             <button className="flex flex-row gap-3 p-2" onClick={handleHome}>
                 <Image src={ArrowLargeLeft} alt=""/>
                 <h1 className="text-h6-bold text-white900">Invertir</h1>
             </button>
+            </Link>
 
             <p className="text-p2-regular text-center p-3">Ideal para decisiones tácticas</p>
             <h1 className="text-h5-semibold p-4">Métodos de pago</h1>
@@ -51,6 +65,14 @@ function Investment (){
                         <ArrowForwardIos fontSize="small"/>
                     </button>
                 </div>
+                { deposited === 0 
+                ? (<div className=" bg-primary400 flex flex-col justify-center gap-2 items-center text-white  text-center w-[50%] mx-auto p-2 mt-32 rounded-lg shadow-lg">
+                        <h2 className="text-h6-semibold">¿Aún no has realizado un deposito?</h2>
+                        <p className="text-p1-semibold">Podemos prestarte $100.000!</p>
+                        <p className="text-p2-semibold">De esta manera podrás experimentar en <strong className="text-accent400">Yapa</strong></p>
+                        <Button variant="basic" size="medium" onClick={handleMoneyFree}> Si Quiero!</Button>
+                    </div>)
+                : ""}
             </section>}
         </main>
     </>)

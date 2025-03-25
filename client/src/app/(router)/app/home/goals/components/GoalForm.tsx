@@ -36,9 +36,13 @@ export default function GoalForm() {
 			description: '',
 			amountObjective: 0,
 			frequency: '',
-			startDate: '',
-			targetDate: '',
-			objectiveType: ''
+			startDate: new Date(),
+			targetDate: new Date(),
+			objectiveType: '' ,
+			idGoal: 0,
+			amount: 0,
+			progress: 0,
+			status: "pending"
 		},
 		validationSchema,
 		onSubmit: async (values) => {
@@ -87,7 +91,7 @@ export default function GoalForm() {
 							name='startDate'
 							className='w-full p-3 border rounded-md'
 							onChange={formik.handleChange}
-							value={formik.values.startDate}
+							value={new Date(formik.values.startDate).toISOString().split('T')[0]} 
 						/>
 					</div>
 					<div className='flex'>
@@ -98,7 +102,7 @@ export default function GoalForm() {
 							name='targetDate'
 							className='w-full p-3 border rounded-md'
 							onChange={formik.handleChange}
-							value={formik.values.targetDate}
+							value={new Date(formik.values.targetDate).toISOString().split('T')[0]} 
 						/>
 					</div>
 				</div>

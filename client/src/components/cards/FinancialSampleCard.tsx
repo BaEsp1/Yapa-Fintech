@@ -1,6 +1,7 @@
-import Link from 'next/link'
-import React from 'react'
+'use client'
+import React, { useState } from 'react'
 import Button from '../ui/Button'
+import { ModalData } from '../modal/financialProfile/detail'
 
 interface FinancialSampleProps {
 	title: string,
@@ -8,8 +9,16 @@ interface FinancialSampleProps {
 	path: string
 }
 
-export default function FinancialSampleCard({ title, value, path }: FinancialSampleProps) {
-	return (
+export default function FinancialSampleCard({ title, value}: FinancialSampleProps) {
+
+	const [modal , setModal ]= useState( false)
+	const handleOpenModal = () =>{
+		setModal (true)
+	}
+	const handleCloseModal = ()=>{
+		setModal (false)}
+	return (<>
+			{modal && <ModalData title={title} value={value} onClose={handleCloseModal}/>}
 		<div className='p-4 bg-white50 text-white900 rounded-2xl space-y-6 w-[240px] h-[160px]'>
 			<div className='flex flex-col space-y-6'>
 				<div className='space-y-2'>
@@ -23,11 +32,10 @@ export default function FinancialSampleCard({ title, value, path }: FinancialSam
 					</p>
 				</div>
 				<div>
-					<Link href={path}>
-						<Button size='small' className='rounded-3xl w-full bg-accent25'>Ver detalle</Button>
-					</Link>
+						<Button size='small' className='rounded-3xl w-full bg-accent25' onClick={handleOpenModal}>Ver detalle</Button>
 				</div>
 			</div>
 		</div>
+		</>
 	)
 }

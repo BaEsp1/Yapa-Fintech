@@ -7,12 +7,22 @@ import Input from '../ui/Input';
 import Link from 'next/link';
 import { Notifications } from '@mui/icons-material';
 import { LogoAzul } from '@/assets';
+import Cookies from 'js-cookie';
+import { redirect } from 'next/navigation';
 
 export default function Navbar() {
 	const [isOpen, setIsOpen] = useState(false)
-
 	const toggleMenu = () => setIsOpen(!isOpen)
 
+	function logOut() {
+		Cookies.remove('userLogged', {
+		  secure: true,
+		  sameSite: 'strict'
+		});
+	  
+		redirect('/');
+	  }
+	  
 	return (
 		<header className='shadow-md relative px-6 py-4'>
 			<nav className='mx-auto flex items-center justify-between px-4 py-2 md:py-4'>
@@ -81,14 +91,11 @@ export default function Navbar() {
 
 				{/* Mobile Links */}
 				<ul className='flex flex-col gap-4 text-gray-700'>
-					<li><Link href={'#'}>Perfil</Link></li>
-					<li><Link href={'#'}>Notificaciones</Link></li>
-					<li><Link href={'#'}>Mensajes</Link></li>
-					<li><Link href={'#'}>Historial de operaciones</Link></li>
-					<li><Link href={'#'}>Metas financieras</Link></li>
-					<li><Link href={'#'}>Sobre iUpi</Link></li>
-					<li><Link href={'#'}>Política de privacidad</Link></li>
-					<li><Link href={'#'}>Términos y condiciones</Link></li>
+					<li><Link href={'/app/profile'}>Perfil</Link></li>
+					<li><Link href={'/'}>Sobre Yapa</Link></li>
+					<li><Link href={'#'}>Configuración</Link></li>
+					<hr></hr>
+					<li><button className='text-alert400' onClick={logOut}>Salir</button></li>
 				</ul>
 			</div>
 		</header>

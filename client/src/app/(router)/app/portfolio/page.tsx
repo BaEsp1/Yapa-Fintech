@@ -4,46 +4,46 @@ import { ArrowBackIos, SettingsSuggest } from '@mui/icons-material'
 import Link from 'next/link'
 import React, { useState, useEffect } from 'react'
 import Button from '@/components/ui/Button'
-import CollapsibleSection from './components/CollapsibleSection'
-import AssetList from './components/AssetList'
-import MarketSection from './components/MarketSection'
-import OperationsHistory from './components/OperationsHistory'
+import CollapsibleSection from "@/components/cards/CollapsibleSection"
+import AssetList ,{Asset}from '@/components/cards/AssetList'
+import MarketSection from '@/components/cards/MarketSection'
+import OperationsHistory from '@/components/cards/OperationsHistory'
 import usePortfoilStore from '@/store/portfoil/portfoilStore'
 import marketStore from '@/store/market/dataMarket'
 import { FinancialData } from '@/store/market/dataMarket'
 import Loading from '@/components/animations/Loader/loader'
-// import { getPortfolios } from '@/utils/portfoil/getPortfoil'
-import TotalCard from './components/totalCard'
+import TotalCard from '@/components/cards/totalCard'
 import useOperationsStore from '@/store/operations/operations'
+import useWalletStore from '@/store/balance/totalbalance'
 
 export default function Portfolio() {
 	const [activeTab, setActiveTab] = useState<'portfolio' | 'movements'>('portfolio')
-  const { portfolios } = usePortfoilStore();
+  const { portfolios , fetchPortfolios} = usePortfoilStore();
   const [bonos, setBonos] = useState<FinancialData[]>([]);
   const [cedears, setCedears] = useState<FinancialData[]>([]);
   const [loading, setLoading] = useState(true);  
   const loadAllVariablesData = marketStore((state) => state.loadAllVariablesData);
+  const bonosMKT = marketStore((state)=> state.bonos)
+  const accionesMKT = marketStore((state)=> state.cedears)
   const loadOperations = useOperationsStore((state) => state.loadOperations);
   const operations = useOperationsStore((state) => state.operations);
+  const totalInvestments = useWalletStore((state)=>state.totalBalance.invested)
+  const loadBalance = useWalletStore((state)=>state.loadBalanceData)
+  let mappedAssets : Asset[] = []
 
+  // console.log(portfolios)
   useEffect(() => {
 
+    if(loading){
     loadAllVariablesData();
-    const unsubscribe = marketStore.subscribe(
-      (state) => {
-
-        if (state.bonos !== bonos || state.cedears !== cedears) {
-          setBonos(state.bonos);  
-          setCedears(state.cedears);
-          loadOperations()
-          // getPortfolios()
-          setLoading(false); 
+    fetchPortfolios();
+    loadBalance()
+    loadOperations()
+    setBonos(bonosMKT)
+    setCedears(accionesMKT)
+    setLoading(false); 
         }
-      }
-    );
-
-    return () => unsubscribe();  
-  }, [bonos, cedears, loadAllVariablesData]);
+  }, []);
 
 
   if (loading) {
@@ -59,7 +59,7 @@ export default function Portfolio() {
     {
       title: 'Bonos',
       description: 'Los bonos son deuda. Al comprarlos, el inversionista presta dinero.',
-      funds: Object.entries(portfolios?.Bonos || {}).map(([key, portfolio]) => {
+      funds: Object.entries(portfolios?.Bono || {}).map(([key, portfolio]) => {
         const value = portfolio.quantity * portfolio.purchasePrice;
         return {
           key,
@@ -84,7 +84,6 @@ export default function Portfolio() {
 
   const totalBonos = investments[0].funds.reduce((total, fund) => total + fund.value, 0);
   const totalAcciones = investments[1].funds.reduce((total, fund) => total + fund.value, 0);
-  const totalInvestments = totalBonos + totalAcciones;
 
 
   const updatedInvestments = investments.map((investment) => {
@@ -98,24 +97,28 @@ export default function Portfolio() {
     };
   });
 
-  const mappedAssets = [
-    ...portfolios?.Bonos.map((item) => ({
-      name: item.object[0],
-      price: item.purchasePrice,
-      change: '0', 
-      trend: 'neutral', 
-      quantity: item.quantity, 
-      historicalData: []
-    })),
-    ...portfolios?.Acciones.map((item) => ({
-      name: item.object[0], 
-      price: item.purchasePrice, 
-      change: '0', 
-      trend: 'neutral', 
-      quantity: item.quantity, 
-      historicalData: []
-    })),
-  ];
+  if (portfolios) {
+    mappedAssets = [
+      ...(portfolios?.Bono?.length ? portfolios.Bono.map((item) => ({
+        name: item.object[0],
+        price: item.purchasePrice,
+        change: '0',
+        trend: 'neutral',
+        quantity: item.quantity,
+        historicalData: []
+      })) : []),
+      ...(portfolios?.Acciones?.length ? portfolios.Acciones.map((item) => ({
+        name: item.object[0],
+        price: item.purchasePrice,
+        change: '0',
+        trend: 'neutral',
+        quantity: item.quantity,
+        historicalData: []
+      })) : []),
+    ];
+  } else {
+    mappedAssets = [];
+  }
 
   return (
     <main className="px-4 pt-6 pb-24 w-full h-min-screen text-white900">
@@ -128,9 +131,9 @@ export default function Portfolio() {
             </Link>
             <h6 className='text-h6-bold ml-2'>Portafolio</h6>
           </div>
-          <Link href={'/app/settings'}>
+          {/*<Link href={'/app/settings'}>
+          </Link>*/}
             <SettingsSuggest />
-          </Link>
         </div>
         <div className='mx-auto'>
           <p className='text-p2-regular'>Ideal para decisiones estratégicas</p>
@@ -164,17 +167,23 @@ export default function Portfolio() {
                 <p className='text-p1-regular text-white700'>Descubre el origen del aumento de tu retorno de inversión.</p>
               </div>
 
+              { (portfolios?.Bono?.length > 0 || portfolios?.Acciones?.length > 0) ?
+              <>
               <div className='p-4 space-y-8'>
                 {updatedInvestments.map((investment, index) => (
-                  <CollapsibleSection
-                    key={index}
-                    category={investment.title}
-                    funds={investment.funds}
-                  />
-                ))}
+                    <CollapsibleSection
+                      key={index}
+                      category={investment.title}
+                      funds={investment.funds}
+                    />
+                  ))}
               </div>
 
               <AssetList assets={mappedAssets} bonos={bonos} cedears={cedears}/>
+              </>
+                : (<h3 className='text-p1-regular text-accent400 px-6  '>Animáte a invertir!</h3>)
+              }
+
               <MarketSection bonos={bonos} cedears={cedears} />
             </div>
           )}

@@ -1,16 +1,8 @@
 
 export const fetchVariableData = async (variable: string) => {
   const variablesMap: { [key: string]: number } = {
-    reservasInternacionalesBCRA: 5,
-    tipoCambioMinorista: 6,
-    tipoCambioMayorista: 7,
-    tasaPoliticaMonetaria: 8,
-    badlarPesosBancosPrivados: 9,
-    tasaPaseActivaBCRA: 10,
-    tasaPrestamosPersonales: 11,
-    baseMonetariaTotal: 12,
-    inflacionMensual: 13,
-    uva: 14,
+    tasaDeInteres: 12,
+    cotizacionUSD: 4,
   };
 
   const idVariable = variablesMap[variable];

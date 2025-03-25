@@ -1,11 +1,14 @@
+'use client'
 import { FinancialData } from "@/store/market/dataMarket"; 
 import InstrumentInitialsCircle from "../graphs/InitialsCircle";
+import { Portfolio } from "@/store/portfoil/portfoilStore";
 
 export interface InstrumentProps {
   id: string; 
   market: FinancialData[][];
   usd?:number;
   moneyWallet?:number;
+  portfoil?:Record<string, Portfolio[]>
 }
 
 export const GeneralInformationInstrument = ({ id, market }: InstrumentProps) => {

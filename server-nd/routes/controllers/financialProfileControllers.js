@@ -4,7 +4,6 @@ const { FinancialProfile, User } = require('../../dataBase/dataBase');
 exports.getFinancialProfile = async (req, res) => {
   const userId = req.user.idUser; 
 
-  console.log(userId)
   try {
     const profile = await FinancialProfile.findOne({
       where: { idUser: parseInt(userId) },
@@ -48,7 +47,21 @@ exports.updateFinancialProfile = async (req, res) => {
     });
 
     if (!profile) {
-      return res.status(404).json({ message: 'Perfil financiero no encontrado' });
+
+      try{
+      const newProfile = await FinancialProfile.create({
+        idUser: userId,
+        knowledgeLevel,
+        riskProfile,
+        incomeMonthly,
+        expensesMonthly,
+        percentageSave,
+        totalDebt
+      });
+      return res.status(201).json({ message: 'Perfil financiero creado', newProfile });
+      }catch(error){
+        console.log(error)
+      }
     }
 
     // Actualizar el perfil financiero con los nuevos valores

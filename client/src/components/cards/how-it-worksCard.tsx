@@ -38,7 +38,7 @@ export const HowItWorksHome = () =>{
               </div>
             </div>
             <div className="mt-16 text-center">
-              <Link href="/account/login">
+              <Link href="/login">
                 <Button size="large" variant="solid" className="shadow-lg">
                   Comenzar ahora
                   <ArrowBackIos className="ml-2 " />

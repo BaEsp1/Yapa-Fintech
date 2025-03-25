@@ -1,16 +1,17 @@
 import { TestData } from "@/components/modal/Onbording/steps/index";
 import axios from "axios";
 import Cookies from "js-cookie";
-import assignProfileFinance from "@/lib/testOnbording";
-import { useFinancialProfileStore } from "@/store/user/userFinanceProfile";
+import assignProfileFinance, { assignKnowLedge } from "@/lib/testOnbording";
+import { FinancialProfile, useFinancialProfileStore } from "@/store/user/userFinanceProfile";
 
 const URL = process.env.NEXT_PUBLIC_API_URL 
 
-async function sendProfileFinance(test: TestData): Promise<void> {
+async function sendProfileFinance(test: TestData): Promise<FinancialProfile | null> {
   const userLogged = JSON.parse(Cookies.get("userLogged") || "{}");
-  const userId = userLogged.userId;
+  const token = userLogged.token
 
   const riskProfile = assignProfileFinance(test);
+  const knowledgeLevel = assignKnowLedge(riskProfile)
   const income = test.income
   const expenses = test.expenses
   const savings = test.savings
@@ -18,73 +19,36 @@ async function sendProfileFinance(test: TestData): Promise<void> {
   const updateStore = useFinancialProfileStore.getState().setFinancialProfile;
 
   try {
-    const response = await axios.post(`${URL}/onboarding`, {
-      userId,
-      riskProfile,
-      incomeMonthly:income ,
-      expensesMonthly:expenses,
-      percentageSave: savings,
-    });
 
-    // console.log("idUser", userId)
-    // console.log("response",response )
-    const profileData = response.data;
+    const response = await axios.put(`${URL}/api/profile/profile`, {
+      riskProfile,
+      knowledgeLevel,
+      incomeMonthly:Number(income) ,
+      expensesMonthly:Number(expenses),
+      percentageSave: Number(savings),
+      totalDebt: 0
+    },{ 
+      headers: {
+      Authorization: `Bearer ${token}`,
+    }});
+
+    console.log("Respuesta del servidor:", response);
+    
+    const profileData: FinancialProfile = response.data.profile;
     updateStore(profileData);
 
     return profileData;
 
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.status === 500) {
-      const financialData = useFinancialProfileStore.getState().financialProfile;
-
-
-      const updatedProfile = {
-        knowledgeLevel: financialData?.knowledgeLevel || "",
-        riskProfile,
-        incomeMonthly: income ,
-        expensesMonthly: expenses ,
-        percentageSave: savings ,
-        totalDebt: financialData?.totalDebt ?? 0.1,
-        savingsTotal: financialData?.savingsTotal ?? 0.1,
-        patrimonyTotal: financialData?.patrimonyTotal ?? 0.1,
-        userId,
-      };
-
-
-      try {
-        const response = await axios.patch(
-          `${URL}/financing-profile/${financialData?.id}`,
-          updatedProfile,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              accept: "*/*",
-            },
-          }
-        );
-        // console.log("financialData", updatedProfile)
-        // console.log("idUser", userId)
-        // console.log("response",response )
-
-        const profileData = response.data;
-
-        updateStore(profileData);
-
-        return profileData;
-      } catch (retryError) {
-        console.error("Error al hacer el PATCH:", retryError);
+    console.error("Error:", error);
+    return null
       }
-    } else {
-      console.error("Error al hacer el POST:", error);
-    }
-  }
+
 }
-
-
 
 async function skipProfileFinance(): Promise<void> {
   const userLogged = JSON.parse(Cookies.get("userLogged") || "{}");
-  const userId = userLogged.userId;
+  const token = userLogged.token;
 
   const income = 0
   const expenses = 0
@@ -93,13 +57,16 @@ async function skipProfileFinance(): Promise<void> {
   try {
     const riskProfile = "SKIP";
 
-    const response = await axios.post(`${URL}/onboarding`, {
-      userId,
+    const response = await axios.put(`${URL}/api/profile/profile`, {
       riskProfile,
-      incomeMonthly:income ,
+      incomeMonthly:income,
       expensesMonthly:expenses,
       percentageSave: savings,
-    });
+      totalDebt: 0
+    },{ 
+      headers: {
+      Authorization: `Bearer ${token}`,
+    }});
 
     const profileData = response.data;
 
@@ -108,53 +75,46 @@ async function skipProfileFinance(): Promise<void> {
     return profileData;
   } catch (error) {
 
-    if (error) {
-      const financialData = useFinancialProfileStore.getState().financialProfile;
-
-      if (financialData) {
-        const updatedProfile = {
-          knowledgeLevel: financialData.knowledgeLevel || "SKIP",
-          riskProfile:  financialData.knowledgeLevel || "SKIP",
-          incomeMonthly: financialData.incomeMonthly ?? 0.1,
-          expensesMonthly: financialData.expensesMonthly ?? 0.1,
-          percentageSave: financialData.percentageSave ?? 0.1,
-          totalDebt: financialData.totalDebt ?? 0.1,
-          savingsTotal: financialData.savingsTotal ?? 0.1,
-          patrimonyTotal: financialData.patrimonyTotal ?? 0.1,
-          userId: userId,
-        };
-
-
-        try {
-
-          const patchResponse = await axios.patch(
-            `${URL}/financing-profile/${financialData.id}`,
-            updatedProfile,
-            {
-              headers: {
-                "Content-Type": "application/json",
-                accept: "*/*",
-              },
-            }
-          );
-
-          const updatedData = patchResponse.data;
-
-          useFinancialProfileStore.setState({ financialProfile: updatedData });
-
-          return updatedData;
-        } catch (patchError) {
-          console.error("Error al actualizar el perfil financiero:", patchError);
-        }
-      } else {
-        console.error("No se encontró un perfil financiero previo en el store.");
-      }
-    } else {
+    
       console.error("Hubo un error al enviar el perfil al backend:", error);
     }
+  
+}
+
+ export type ProfileData = {
+  incomeMonthly: number;
+  expensesMonthly: number;
+  percentageSave: number;
+  totalDebt: number;
+};
+
+async function updateProfileData<K extends keyof ProfileData>(key: K, value: ProfileData[K]): Promise<void> {
+  const userLogged = JSON.parse(Cookies.get("userLogged") || "{}");
+  const token = userLogged.token;
+
+  const updateStore = useFinancialProfileStore.getState().setFinancialProfile;
+
+  try {
+    const updateData = { [key]: value } as { [key in K]: ProfileData[K] };
+
+    const response = await axios.put(`${URL}/api/profile/profile`, updateData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const profileData = response.data;
+    updateStore(profileData);
+
+    return profileData;
+  } catch (error) {
+    console.error("Error:", error);
   }
 }
+
+
 export {
     sendProfileFinance,
-    skipProfileFinance
+    skipProfileFinance,
+    updateProfileData
 }

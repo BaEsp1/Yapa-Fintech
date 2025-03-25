@@ -87,7 +87,6 @@ exports.getAllPortfoils = async (req, res) => {
         include: [
           {
             model: Instrument,
-            through: { attributes: [] }, 
             as: 'instruments',  
           }
         ],

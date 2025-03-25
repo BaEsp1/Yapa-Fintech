@@ -19,7 +19,7 @@ const generateToken = (user) => {
     firstName: user.firstName,
     lastName: user.lastName
   };
-  const token = jwt.sign(payload, Secret_Key_JWT, { expiresIn: '1h' });
+  const token = jwt.sign(payload, Secret_Key_JWT, { expiresIn: '12h' });
   return token;
 };
 
@@ -31,8 +31,10 @@ exports.login = async (req, res) => {
     const token = generateToken(user);
     res.status(200).json({
       message: 'Inicio de sesión exitoso',
-      user: { id: user.id, email: user.email },
+      success:true,
       token: token,
+      email: user.email,
+      userId: user.idUser,
     });
   } else {
     res.status(401).json({
@@ -42,8 +44,9 @@ exports.login = async (req, res) => {
 };
 
 exports.register = async (req, res) => {
-  const { name, lastName, birthday, country, phone, email, password } = req.body;
+  const { name, lastName, birthDate, country, phoneNumber, email, password } = req.body;
 
+  // console.log(req.body)
   try {
     // Verificar si el usuario ya existe
     const existingUser = await User.findOne({ where: { email } });
@@ -56,14 +59,15 @@ exports.register = async (req, res) => {
 
     // Encriptar la contraseña
     const encryptedPassword = encryptPassword(password);
+    const formattedBirthDate = new Date(birthDate);
 
     // Crear el usuario en la base de datos y esperar a que se guarde
     const newUser = await User.create({
       name : name,
       lastName : lastName,
-      birthDate: birthday,  
+      birthDate:  formattedBirthDate,  
       country: country ,
-      phoneNumber: phone,
+      phoneNumber: phoneNumber ,
       email : email,
       password: encryptedPassword,
       role: "user",
@@ -78,18 +82,22 @@ exports.register = async (req, res) => {
       totalBalance: 0,
     });
 
+    console.log("balance",newBalance)
     // Crear el portafolio con totalPrice en 0
     const newPortfoil = await Portfoil.create({
       idUser: newUser.idUser,
       totalPrice: 0,  
     });
+    console.log("newPortfoil",newPortfoil)
 
     // Generar un token para el usuario
     const token = generateToken(newUser);
 
     res.status(201).json({
+      success:true,
       message: 'Usuario registrado exitosamente',
-      user: { id: newUser.idUser, email: newUser.email },
+      userId : newUser.idUser, 
+      email: newUser.email,
       balance: newBalance,
       portfoil: newPortfoil, 
       token: token,

@@ -74,7 +74,7 @@ export const CarouselComunnity = () => {
       </div>
 
       <div className="flex p-6 flex-row justify-center gap-5 text-p2-semibold text-white500">
-        <button className="flex flex-row gap-1 justify-center text-white500">
+        <button className="flex flex-row gap-1 justify-center items-center text-white500">
           <Image src={CrownIcon} alt="Ranking" />
           Ranking
         </button>
@@ -84,7 +84,7 @@ export const CarouselComunnity = () => {
           Puntos ganados
         </button>
 
-        <button className="flex flex-row gap-1 justify-center">
+        <button className="flex flex-row gap-1 justify-center items-center">
           <Image src={ShieldIcon} alt="Divisiones" />
           Divisiones
         </button>

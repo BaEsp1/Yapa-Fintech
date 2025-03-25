@@ -7,9 +7,14 @@ const URL = process.env.NEXT_PUBLIC_API_URL
 export const getUserData = async () => {
   const userLogged = JSON.parse(Cookies.get('userLogged') || '{}');
   const userId = userLogged.userId;
+  const token = userLogged.token
 
   try {
-    const userResponse = await axios.get(`${URL}/user/${userId}`);
+    const userResponse = await axios.get(`${URL}/api/users/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     const userData = userResponse.data;
 
     const { setUser } = useUserStore.getState();
@@ -21,8 +26,8 @@ export const getUserData = async () => {
       photoUrl: userData.photoUrl,
       phoneNumber: userData.phoneNumber,
       birthDate: userData.birthDate,
-      registerDate: userData.registerDate,
-      roles: userData.roles,
+      registerDate: userData.createdAt,
+      roles: userData.role,
     });
 
     return { userData };

@@ -27,7 +27,11 @@ const options = {
     },
     servers: [
       {
-        url: `${URL_BACK}/api`, 
+        url: `${URL_BACK}/api`,
+        description: 'deploy', 
+      },
+      { url: `http://localhost:4000/api`,
+        description: 'local'
       },
     ],
     components: {
@@ -60,7 +64,7 @@ app.use("/api", routes);
 
 (async () => {
   try {
-    await conn.sync({ force: false });
+    await conn.sync({ force: false});
     console.log("Base de datos sincronizada");
   } catch (error) {
     console.log("Error sincronizando la base de datos:", error);

@@ -12,7 +12,7 @@ export default function Step7() {
   let img
 
   const handleHome = () =>{
-    redirect("/")
+    redirect("/app/home")
   }
 
   const handleStay = () =>{

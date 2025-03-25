@@ -31,13 +31,13 @@ router.get('/', verifyToken, operationController.getAllOperations);
 
 /**
  * @swagger
- * /operations:
+ * /operations/buy:
  *   post:
- *     summary: Crear una nueva operación
+ *     summary: Comprar un instrumento financiero
  *     tags: [Operaciones]
  *     security:
- *     - bearerAuth: []
- *     description: Registra una operación de compra o venta de instrumentos financieros.
+ *       - bearerAuth: []
+ *     description: Registra una operación de compra de un instrumento financiero y actualiza el portafolio y balance del usuario.
  *     requestBody:
  *       required: true
  *       content:
@@ -45,27 +45,28 @@ router.get('/', verifyToken, operationController.getAllOperations);
  *           schema:
  *             type: object
  *             properties:
- *               idPortfoil:
- *                 type: integer
- *               instruments:
- *                 type: array
- *                 items:
- *                   type: object
- *                   properties:
- *                     idInstrument:
- *                       type: integer
- *                     quantity:
- *                       type: integer
- *                     pricePerUnit:
- *                       type: number
- *               operationType:
- *                 type: string
- *                 enum: [buy, sell]
+ *               instrument:
+ *                 type: object
+ *                 properties:
+ *                   name:
+ *                     type: string
+ *                   symbol:
+ *                     type: string
+ *                   price:
+ *                     type: number
+ *                   quantity:
+ *                     type: integer
+ *                   type:
+ *                     type: string
  *               currency:
  *                 type: string
+ *               subTotal:
+ *                 type: number
+ *               totalPrice:
+ *                 type: number
  *     responses:
  *       200:
- *         description: Operación creada exitosamente.
+ *         description: Compra procesada exitosamente. El portafolio y balance del usuario se han actualizado.
  *       400:
  *         description: Error en la operación (por ejemplo, saldo insuficiente o cantidad inválida).
  *       404:
@@ -73,7 +74,51 @@ router.get('/', verifyToken, operationController.getAllOperations);
  *       500:
  *         description: Error interno del servidor.
  */
-router.post('/operations', verifyToken, operationController.createOperation);
+router.post('/operations/buy', verifyToken, operationController.buyInstrument);
+
+/**
+ * @swagger
+ * /operations/sell:
+ *   post:
+ *     summary: Vender un instrumento financiero
+ *     tags: [Operaciones]
+ *     security:
+ *       - bearerAuth: []
+ *     description: Registra una operación de venta de un instrumento financiero, actualizando el portafolio y balance del usuario.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               instrument:
+ *                 type: object
+ *                 properties:
+ *                   symbol:
+ *                     type: string
+ *                   quantity:
+ *                     type: integer
+ *                   price:
+ *                     type: number
+ *               currency:
+ *                 type: string
+ *               subTotal:
+ *                 type: number
+ *               totalPrice:
+ *                 type: number
+ *     responses:
+ *       200:
+ *         description: Venta procesada exitosamente. El portafolio y balance del usuario se han actualizado.
+ *       400:
+ *         description: Error en la operación (por ejemplo, saldo insuficiente o cantidad inválida).
+ *       404:
+ *         description: Portafolio no encontrado o no hay suficiente cantidad para vender.
+ *       500:
+ *         description: Error interno del servidor.
+ */
+router.post('/operations/sell', verifyToken, operationController.sellInstrument);
+
 
 /**
  * @swagger

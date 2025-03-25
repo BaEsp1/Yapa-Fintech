@@ -3,7 +3,6 @@ const { Balance, Portfoil, Goal } = require('../../dataBase/dataBase');
 // Obtener el balance del usuario
 exports.getBalance = async (req, res) => {
   const userId = req.user.idUser;
-  console.log(userId)
 
   try {
     const balance = await Balance.findOne({ where: { idUser: userId } });
@@ -73,37 +72,64 @@ exports.transferToInvested = async (req, res) => {
 // ahorro de dinero en Metas
 exports.transferToSaved = async (req, res) => {
   const userId = req.user.idUser;
-  const { amount } = req.body; 
+  const { amount } = req.body;
+  const amountAux = Number(amount);
+
+  console.log("User ID:", userId);
+  console.log("Monto recibido:", amount);
+  console.log("Monto convertido a número:", amountAux);
+
+  if (isNaN(amountAux) || amountAux <= 0) {
+    console.log("Monto inválido o menor que 0");
+    return res.status(400).json({ message: 'Monto inválido' });
+  }
 
   try {
     const balance = await Balance.findOne({ where: { idUser: userId } });
 
+    console.log("Balance encontrado:", balance);
+
     if (!balance) {
+      console.log("No se encontró balance para el usuario:", userId);
       return res.status(404).json({ message: 'Balance no encontrado' });
     }
 
+    // Validar que balance.deposited no sea null
+    if (balance.deposited == null) {
+      console.log("El campo deposited es null para el usuario:", userId);
+      return res.status(400).json({ message: 'Saldo no inicializado correctamente' });
+    }
 
-    if (balance.deposited < amount) {
+    console.log("Saldo deposited actual:", balance.deposited);
+
+    if (balance.deposited < amountAux) {
+      console.log("Saldo insuficiente para transferir. Saldo actual:", balance.deposited, "Monto a transferir:", amountAux);
       return res.status(400).json({ message: 'Saldo insuficiente para transferir a ahorros' });
     }
 
-    balance.deposited -= amount;
-    balance.saved += amount;
+    console.log("Procediendo con la transferencia...");
+
+    balance.deposited -= amountAux;
+    balance.saved += amountAux;
     balance.totalBalance = balance.deposited + balance.saved + balance.invested;
 
+    console.log("Nuevo balance después de la transferencia:", balance);
 
     await balance.save();
 
     res.status(200).json({ message: 'Dinero transferido exitosamente a ahorros', balance });
   } catch (error) {
+    console.error("Error al procesar la transferencia:", error);
     res.status(500).json({ message: 'Error al transferir dinero a ahorros', error });
   }
 };
+
 
 // Retiro de dinero de la plataforma
 exports.withdraw = async (req, res) => {
   const userId = req.user.idUser;
   const { amount } = req.body; 
+  const amountAux = Number(amount)
 
   try {
     const balance = await Balance.findOne({ where: { idUser: userId } });
@@ -111,11 +137,11 @@ exports.withdraw = async (req, res) => {
       return res.status(404).json({ message: 'Balance no encontrado' });
     }
 
-    if (balance.deposited < amount) {
+    if (balance.deposited < amountAux) {
       return res.status(400).json({ message: 'Saldo insuficiente para retirar' });
     }
 
-    balance.deposited -= amount;
+    balance.deposited -= amountAux;
     balance.totalBalance = balance.deposited + balance.saved + balance.invested;
 
     await balance.save();
@@ -130,7 +156,8 @@ exports.withdraw = async (req, res) => {
 //cancelar meta y envio de dinero a deposited
 exports.cancelGoal = async (req, res) => {
     const userId = req.user.idUser;
-    const { idGoal, amountToWithdraw } = req.body; 
+    const { idGoal, amount} = req.body; 
+    const amountAux = Number(amount)
   
     try {
       const balance = await Balance.findOne({ where: { idUser: userId } });
@@ -146,20 +173,15 @@ exports.cancelGoal = async (req, res) => {
       }
   
 
-      if (amountToWithdraw > goal.amount) {
+      if (amountAux > goal.amount) {
         return res.status(400).json({ message: 'No puedes retirar más dinero del que has ahorrado' });
       }
   
-      goal.amount -= amountToWithdraw;  
-      balance.saved -= amountToWithdraw; 
-      balance.deposited += amountToWithdraw; 
+      goal.amount -=amountAux
+      balance.saved -= amountAux
+      balance.deposited += amountAux
   
-      if (goal.amount === 0) {
-        await goal.destroy();
-      } else {
-        await goal.save();  
-      }
-  
+      await goal.save();  
 
       balance.totalBalance = balance.deposited + balance.saved + balance.invested;
   
@@ -171,3 +193,25 @@ exports.cancelGoal = async (req, res) => {
     }
   };
   
+  // Ingreso de dinero de la plataforma
+exports.updateDeposited= async (req, res) => {
+  const userId = req.user.idUser;
+  const { amount } = req.body; 
+
+  try {
+    const balance = await Balance.findOne({ where: { idUser: userId } });
+
+    if (!balance) {
+      return res.status(404).json({ message: 'Balance no encontrado' });
+    }
+    balance.deposited = parseFloat(balance.deposited) || 0;
+    balance.deposited += parseFloat(amount) ;
+    balance.totalBalance = balance.deposited + balance.saved + balance.invested;
+
+    await balance.save();  
+
+    res.status(200).json({ message: 'Dinero retirado exitosamente', balance });
+  } catch (error) {
+    res.status(400).json({ message: 'Error al ingrear dinero', error });
+  }
+};
