@@ -67,7 +67,7 @@ export default function Home() {
     {
       title: 'Total de deudas',
       icon: '/img/FlagInHole.png',
-      value: 0,
+      value: financialProfile?.totalDebt ||0,
       path: '/details/debts'
     }
   ]

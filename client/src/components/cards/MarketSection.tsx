@@ -32,20 +32,28 @@ interface MarketSectionProps {
   cedears: MarketAsset[];
 }
 
+export interface MarketDataWithCurrency extends MarketData {
+  currency: string;
+}
+
 export default function MarketSection({ bonos, cedears }: MarketSectionProps) {
   const [tabSelected, setTabSelected] = useState<'En alza' | 'A la baja' | 'Bonos' | 'Cedears'>('En alza');
-  const getTrend = (data: Array<MarketData>) => {
+
+  const getTrend = (data: Array<MarketData>, asset:MarketAsset) => {
     return data.map((item) => {
       const variationPercentage = ((item.close - item.open) / item.open) * 100;
       const trend = variationPercentage > 0 ? 'up' : variationPercentage < 0 ? 'down' : 'neutral';
-      return { ...item, trend };
+      return { ...item,
+        trend, 
+        currency: asset.meta.currency  
+       };
     });
   };
 
   const assetsWithTrend = useMemo(() => {
     return [...bonos, ...cedears].map((asset) => ({
       ...asset,
-      body: getTrend(asset.body),
+      body: getTrend(asset.body, asset),
     }));
   }, [bonos, cedears]);
 
@@ -58,6 +66,7 @@ export default function MarketSection({ bonos, cedears }: MarketSectionProps) {
         trend: latestMarketData.trend,
         longName: asset.meta.longName,
         open: latestMarketData.open,
+        currency:latestMarketData.currency
       };
     });
   }, [assetsWithTrend]);
@@ -110,6 +119,7 @@ export default function MarketSection({ bonos, cedears }: MarketSectionProps) {
         <div className="flex flex-col gap-3 w-full">
           {filteredData
             .filter((item) => cedears.some((ced) => ced.meta.symbol === item.symbol))
+            
             .map((item) => (
               <div key={item.symbol}>
               <Link href={`/app/portfolio/detail/${item.symbol}`}>
@@ -126,7 +136,7 @@ export default function MarketSection({ bonos, cedears }: MarketSectionProps) {
                 <div className="text-right flex flex-row gap-3 justify-center items-center">
                   <LineChartLittle bonos={bonos} cedears={cedears} symbol={item.symbol} />
                   <div className='flex flex-col gap-1 '>
-                    <p className="text-p1-semibold">${item.close.toFixed(2)}</p>
+                    <p className="text-p1-semibold">${item.close.toFixed(2)} <span className="text-white500">{item.currency}</span></p>
                     <p
                     className={`font-semibold ${
                       item.trend === 'up' ? 'text-green-600' : item.trend === 'down' ? 'text-red-600' : ''
@@ -170,7 +180,7 @@ export default function MarketSection({ bonos, cedears }: MarketSectionProps) {
                 <div className="text-right flex flex-row gap-3 justify-center items-center">
                   <LineChartLittle bonos={bonos} cedears={cedears} symbol={item.symbol} />
                   <div className='flex flex-col gap-1 '>
-                    <p className="text-p1-semibold">${item.close.toFixed(2)}</p>
+                    <p className="text-p1-semibold">${item.close.toFixed(2)} <span className="text-white500">{item.currency}</span></p>
                     <p
                     className={`font-semibold ${
                       item.trend === 'up' ? 'text-green-600' : item.trend === 'down' ? 'text-red-600' : ''
@@ -210,7 +220,7 @@ export default function MarketSection({ bonos, cedears }: MarketSectionProps) {
           <div className="text-right flex flex-row gap-3 justify-center items-center">
             <LineChartLittle bonos={bonos} cedears={cedears} symbol={item.symbol} />
             <div className='flex flex-col gap-1 '>
-                    <p className="text-p1-semibold">${item.close.toFixed(2)}</p>
+                    <p className="text-p1-semibold">${item.close.toFixed(2)} <span className="text-white500">{item.currency}</span></p>
                     <p
                     className={`font-semibold ${
                       item.trend === 'up' ? 'text-green-600' : item.trend === 'down' ? 'text-red-600' : ''

@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from '../ui/Button';
 import Link from 'next/link';
-import CurrencySwitchBtn from '../ui/CurrencySwitchBtn';
+// import CurrencySwitchBtn from '../ui/CurrencySwitchBtn';
 import useWalletStore from '@/store/balance/totalbalance';
 import marketStore from '@/store/market/dataMarket';
 
@@ -14,7 +14,6 @@ export default function BalanceCard() {
     ? tasaDeInteresBCRA[tasaDeInteresBCRA.length - 1].valor
     : 0;
 
-  console.log(totalBalance)
   const earning = totalBalance.deposited * lastExchangeRate/100;
 
   return (
@@ -45,7 +44,7 @@ export default function BalanceCard() {
           <>
             <div className='flex justify-between items-center'>
               <p className='text-p1-bold'>Retorno de inversión</p>
-              <CurrencySwitchBtn />
+              {/* <CurrencySwitchBtn /> */}
             </div>
             <div className='space-y-3'>
               <h3 className='text-h3-bold'>$ {totalBalance?.deposited?.toLocaleString()}</h3>

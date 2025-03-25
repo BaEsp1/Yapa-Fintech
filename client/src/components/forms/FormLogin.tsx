@@ -1,8 +1,8 @@
 'use client';
 import React, { useState} from 'react';
 import { useFormik } from 'formik';
-// import * as Yup from 'yup';
-import { redirect, useRouter } from 'next/navigation'
+import * as Yup from 'yup';
+import { useRouter } from 'next/navigation'
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
 import Cookies from 'js-cookie';
@@ -10,7 +10,7 @@ import { FcGoogle } from 'react-icons/fc';
 import { fetchLoginUser } from '@/utils/FetchLoginUser';
 import Swal from 'sweetalert2';
 
-const URL = process.env.NEXT_PUBLIC_API_URL 
+// const URL = process.env.NEXT_PUBLIC_API_URL 
 
 export default function FormLogin() {
   const [loading, setLoading] = useState(false);
@@ -18,22 +18,22 @@ export default function FormLogin() {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   
-  // const validationSchema = Yup.object({
-  //   email: Yup.string()
-  //     .email('Ingrese un email válido')
-  //     .required('El email es requerido'),
-  //   password: Yup.string()
-  //     .min(8, 'La contraseña debe tener al menos  8 caracteres')
-  //     .max(15,"la contraseña debe ser igual o menor a 12 caracteres")
-  //     .required('La contraseña es requerida'),
-  // });
+  const validationSchema = Yup.object({
+    email: Yup.string()
+      .email('Ingrese un email válido')
+      .required('El email es requerido'),
+    password: Yup.string()
+      .min(8, 'La contraseña debe tener al menos  8 caracteres')
+      .max(15,"la contraseña debe ser igual o menor a 12 caracteres")
+      .required('La contraseña es requerida'),
+  });
 
   const formik = useFormik({
     initialValues:{ 
       email: Cookies.get("userEmail") || "",
       password: "",
     },
-    // validationSchema,
+    validationSchema,
     onSubmit: async  (values, {resetForm}) => {
       setLoading(true);
 
@@ -42,7 +42,7 @@ export default function FormLogin() {
         Cookies.set('userEmail', values.email, {
           secure: true,
           sameSite: 'strict',
-          expires: 7, // Duración de la cookie en días
+          expires: 7, 
         });
       }
 
@@ -92,7 +92,7 @@ export default function FormLogin() {
   });
 
   const loginGoogle = () =>{
-    redirect(`${URL}/oauth2/authorization/google`)
+    // redirect(`${URL}/oauth2/authorization/google`)
   }
 
   return (

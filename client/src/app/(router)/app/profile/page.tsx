@@ -23,12 +23,18 @@ export default function Profile() {
     const [loading , setLoading] = useState(true)
 
     useEffect(() => {
-        setTimeout(() => {
-            getUserProfile();
-            getUserData();
-            setLoading(false);
-          }, 2000);
-      }, []);
+        const fetchData = async () => {
+            try {
+                await Promise.all([getUserProfile(), getUserData()]);
+            } catch (error) {
+                console.error("Error al cargar los datos del perfil:", error);
+            } finally {
+                setLoading(false); 
+            }
+        };
+
+        fetchData();
+    }, []);
     
     
     return (

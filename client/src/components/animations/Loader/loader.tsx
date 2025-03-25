@@ -8,7 +8,7 @@ const Loading = () => {
       <Image
         src={Logo}
         alt="Loading"
-        className="w-32 h-32 animate-pulse"
+        className="w-32 h-32 animate-pulse bg-white p-2 rounded shadow-lg"
       />
     </div>
   );

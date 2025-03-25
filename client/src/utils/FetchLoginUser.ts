@@ -9,7 +9,6 @@ export  interface LoginUser {
 export const fetchLoginUser = async (userData: LoginUser) => {
 
     try {
-        console.log("click")
         const response = await fetch(`${URL}/api/login`, {
             method: 'POST',
             headers: {
